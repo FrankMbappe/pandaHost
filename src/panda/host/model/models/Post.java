@@ -23,6 +23,18 @@ public class Post {
         this.lastUpdate = lastUpdate;
     }
 
+    public Post(int id){
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass().equals(Post.class)){
+            return id == ((Post) obj).getId();
+        }
+        return false;
+    }
+
     public int getId() {
         return id;
     }

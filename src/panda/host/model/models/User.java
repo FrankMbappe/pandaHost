@@ -10,10 +10,16 @@ public class User {
         this.password = password;
         this.permissions = permissions;
     }
+    public User(String username, int permissions){
+        this.username = username;
+        this.permissions = permissions;
+        this.password = "";
+
+    }
     public User(String username){
         this.username = username;
-        this.password = "";
         this.permissions = 0;
+        this.password = "";
     }
 
     @Override
@@ -22,6 +28,12 @@ public class User {
             return username.equals(((User) obj).getUsername());
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("{\n\tUsername: %s,\n\tPassword: %s,\n\tPermissions: %s\n}",
+                username, password, permissionName(permissions));
     }
 
     public String getUsername() {
@@ -42,6 +54,23 @@ public class User {
 
     public int getPermissions() {
         return permissions;
+    }
+
+    public String permissionName(int permission){
+        switch (permission){
+            case 0 -> {
+                return "None";
+            }
+            case 1 -> {
+                return "ReadOnly";
+            }
+            case 2 -> {
+                return "Read/Write";
+            }
+            default -> {
+                return "Invalid permission";
+            }
+        }
     }
 
     public void setPermissions(int permissions) {

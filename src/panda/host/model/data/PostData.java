@@ -1,8 +1,7 @@
 package panda.host.model.data;
 
-import panda.host.config.databases.MySQLConnection;
+import panda.host.config.database.MySQLConnection;
 import panda.host.model.models.Post;
-import panda.host.model.models.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,6 +40,7 @@ public class PostData implements Data<Post> {
         try {
             List<Post> posts = new ArrayList<>();
             ResultSet rs = mySQLConn.getStatement(true).executeQuery("SELECT * FROM posts");
+            int i = 0;
             while(rs.next()){
                 posts.add(new Post(
                         rs.getInt("id"),
@@ -51,8 +51,9 @@ public class PostData implements Data<Post> {
                         rs.getDouble("fileSize"),
                         rs.getTimestamp("uploadDate"),
                         rs.getTimestamp("lastUpdate")
-                ));
+                )); i++;
             }
+            System.out.println(String.format("[PostData, getAll()] | %d row(s) retrieved.", i));
             return posts;
 
         } catch (SQLException e) {
@@ -64,6 +65,11 @@ public class PostData implements Data<Post> {
     @Override
     public Post get(String id) {
         return null;
+    }
+
+    public Post get(int id) {
+        List<Post> posts = getAll();
+        return posts.get(posts.indexOf(new Post(id)));
     }
 
     @Override
