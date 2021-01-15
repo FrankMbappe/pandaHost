@@ -12,9 +12,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class UserXLSHelper {
-    public static final String DEFAULT_FILE_PATH = "src/panda/host/config/sample.xlsx";
-
+public class UserXLSXHelper {
     public static ArrayList<User> getUserList(String pathToExcelFile, int permissions) {
         ArrayList<User> users = new ArrayList<>();
         try {
@@ -24,7 +22,7 @@ public class UserXLSHelper {
 
             // Indicating the number of rows in the Excel file
             int nbRows = sheet.getPhysicalNumberOfRows();
-            System.out.println(String.format("[UserXLSHelper, main()] | The Excel file returned %d row(s).", nbRows));
+            System.out.println(String.format("[UserXLSXHelper, main()] | The Excel file returned %d row(s).", nbRows));
 
             // Iterating through each rows of the Excel file, one by one
             for (Row row : sheet) {

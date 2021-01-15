@@ -1,6 +1,9 @@
 package panda.host.model.models;
 
+import panda.host.model.models.filters.PostFilter;
+
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class Post {
     private int id;
@@ -33,6 +36,25 @@ public class Post {
             return id == ((Post) obj).getId();
         }
         return false;
+    }
+
+    public boolean matchesFilter(PostFilter filter){
+        // TODO: Add the school class filter
+        // If the filter ask for all, therefore this condition will be always true
+        return filter.isAll() || fileExt.equalsIgnoreCase(filter.getFileType());
+    }
+
+    public ArrayList<Object> getMarshalledForm() {
+        return new ArrayList<>(){{
+            add(id);
+            add(authorId);
+            add(message);
+            add(fileName);
+            add(fileExt);
+            add(fileSize);
+            add(uploadDate);
+            add(lastUpdate);
+        }};
     }
 
     public int getId() {

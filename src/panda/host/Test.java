@@ -1,12 +1,11 @@
 package panda.host;
 
-import panda.host.config.database.MySQLConnection;
 import panda.host.config.database.MySQLConfigs;
-import panda.host.model.data.UserData;
 import panda.host.model.models.MySQLConfig;
 import panda.host.model.models.User;
+import panda.host.server.app.PandaServer;
 
-import java.util.Objects;
+import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class Test {
@@ -15,10 +14,19 @@ public class Test {
 
         // Initializing Panda from the configurations' file
 //        Panda.init(MySQLConfigs.get());
-//        UserData userData = new UserData(new MySQLConnection(Objects.requireNonNull(MySQLConfigs.get())));
+//        UserData userDa
+//        ta = new UserData(new MySQLConnection(Objects.requireNonNull(MySQLConfigs.get())));
 //        userData.add(getUser());
 
-        System.out.println("\nTest done.");
+        try {
+            PandaServer server = new PandaServer();
+            server.launch();
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+//        System.out.println("\nTest done.");
     }
 
 

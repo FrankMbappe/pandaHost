@@ -2,6 +2,7 @@ package panda.host.model.data;
 
 import panda.host.config.database.MySQLConnection;
 import panda.host.model.models.User;
+import panda.host.model.models.filters.Filter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,9 +30,9 @@ public class UserData implements Data<User> {
     }
 
     @Override
-    public List<User> getAll() {
+    public ArrayList<User> getAll() {
         try {
-            List<User> users = new ArrayList<>();
+            ArrayList<User> users = new ArrayList<>();
             ResultSet rs = mySQLConn.getStatement(true).executeQuery("SELECT * FROM users");
             int i = 0;
             while(rs.next()){
@@ -51,9 +52,19 @@ public class UserData implements Data<User> {
     }
 
     @Override
-    public User get(String username) {
+    public ArrayList<User> getMatchingData(Filter filter) {
+        return null;
+    }
+
+    @Override
+    public String getMatchingDataToJson(Filter filter) {
+        return null;
+    }
+
+    @Override
+    public User get(Object username) {
         List<User> users = getAll();
-        return users.get(users.indexOf(new User(username)));
+        return users.get(users.indexOf(new User((String) username)));
     }
 
     @Override
@@ -62,5 +73,10 @@ public class UserData implements Data<User> {
                 user.getUsername(),user.getPassword(), user.getPermissions());
         mySQLConn.executeUpdateStatement(sql, true);
         System.out.println(String.format("[UserData, add()] | User '%s' was added.", user.getUsername()));
+    }
+
+    @Override
+    public String getMatchingDataFromPandaCode(String marshalledCode) {
+        return null;
     }
 }

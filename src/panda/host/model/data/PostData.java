@@ -1,7 +1,11 @@
 package panda.host.model.data;
 
+import com.google.gson.Gson;
 import panda.host.config.database.MySQLConnection;
 import panda.host.model.models.Post;
+import panda.host.model.models.filters.Filter;
+import panda.host.model.models.filters.PostFilter;
+import panda.host.utils.Panda;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,9 +40,9 @@ public class PostData implements Data<Post> {
     }
 
     @Override
-    public List<Post> getAll() {
+    public ArrayList<Post> getAll() {
         try {
-            List<Post> posts = new ArrayList<>();
+            ArrayList<Post> posts = new ArrayList<>();
             ResultSet rs = mySQLConn.getStatement(true).executeQuery("SELECT * FROM posts");
             int i = 0;
             while(rs.next()){
@@ -63,17 +67,47 @@ public class PostData implements Data<Post> {
     }
 
     @Override
-    public Post get(String id) {
-        return null;
+    public ArrayList<Post> getMatchingData(Filter filter){
+        var posts = new ArrayList<Post>();
+
+        // I iterate each post
+        for (Post post : getAll()){
+            // and I check if it matches the filter
+            if(post.matchesFilter((PostFilter) filter)){
+                posts.add(post);
+            }
+        }
+        return posts;
     }
 
-    public Post get(int id) {
+    @Override
+    public String getMatchingDataToJson(Filter filter) {
+        return new Gson().toJson(getMatchingData(filter));
+    }
+
+    @Override
+    public Post get(Object id) { // ID should be an int
         List<Post> posts = getAll();
-        return posts.get(posts.indexOf(new Post(id)));
+        return posts.get(posts.indexOf(new Post((int) id)));
     }
 
     @Override
     public void add(Post post) {
-
+        // TODO: Add a post logic
     }
+
+    @Override
+    public String getMatchingDataFromPandaCode(String pandaCode) {
+        // Here I assume that the panda code sent by the client matches the pattern of PANDAOP_REQUEST_GET_POSTS
+        // Therefore I can freely create a PostFilter using the filters contained in that code
+        ArrayList<String> filtersIntoStringForm = Panda.extractFiltersFromPandaCode(pandaCode);
+
+        // I create my filter variable, using the ctor that converts these filters from String to their normal type
+        PostFilter postFilter = new PostFilter(filtersIntoStringForm);
+
+        // I return the list, applying the filters beforehand extracted
+        // Notice tha
+        return getMatchingDataToJson(postFilter);
+    }
+
 }

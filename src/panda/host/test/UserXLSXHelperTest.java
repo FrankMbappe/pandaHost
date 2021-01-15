@@ -2,19 +2,18 @@ package panda.host.test;
 
 import org.junit.jupiter.api.Test;
 import panda.host.model.models.User;
-import panda.host.utils.UserXLSHelper;
+import panda.host.utils.Panda;
+import panda.host.utils.UserXLSXHelper;
 
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class UserXLSHelperTest {
+class UserXLSXHelperTest {
 
     @Test
     void getUserList() {
         List<User> users = Objects.requireNonNull(
-                UserXLSHelper.getUserList(UserXLSHelper.DEFAULT_FILE_PATH,
+                UserXLSXHelper.getUserList(Panda.DEFAULT_XLSX_FILE_PATH,
                         2));
         for (User user: users) {
             System.out.println(user);

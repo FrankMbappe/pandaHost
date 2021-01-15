@@ -2,15 +2,14 @@ package panda.host.config.database;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import panda.host.model.models.MySQLConfig;
+import panda.host.utils.Panda;
 
 import java.io.File;
 import java.io.IOException;
 
 public class MySQLConfigs {
-    public static final String PATH_TO_CONFIG_FILE = "src/panda/host/config/configs.json";
-
     static ObjectMapper mapper = new ObjectMapper();
-    static File file = new File(PATH_TO_CONFIG_FILE);
+    static File file = new File(Panda.PATH_TO_CONFIG_FILE);
 
     /**
      * Deserializes the configurations' file
