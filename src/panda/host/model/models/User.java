@@ -1,5 +1,7 @@
 package panda.host.model.models;
 
+import panda.host.model.models.filters.Credentials;
+
 public class User {
     private String username;
     private String password;
@@ -34,6 +36,11 @@ public class User {
     public String toString() {
         return String.format("{\n\tUsername: %s,\n\tPassword: %s,\n\tPermissions: %s\n}",
                 username, password, permissionName(permissions));
+    }
+
+    public boolean matchesCredentials(Credentials credentials){
+        return username.equalsIgnoreCase(credentials.getUsername())
+                && password.equals(credentials.getPassword());
     }
 
     public String getUsername() {

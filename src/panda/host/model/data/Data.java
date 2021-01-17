@@ -36,6 +36,20 @@ public interface Data<T> {
     String getMatchingDataToJson(Filter filter);
 
     /**
+     * Finds the first T object that matches a filter in a T list
+     * @param filter represents a filter
+     * @return An object T
+     */
+    T getMatchingItem(Filter filter);
+
+    /**
+     * Finds the first T object that matches a filter in a T list
+     * @param filter represents a filter
+     * @return An object T, converted to Json format
+     */
+    String getMatchingItemToJson(Filter filter);
+
+    /**
      * Finds a specific T element stored in a database
      * @param id represents the ID of the requested T element
      * @return the T element as an object of T class

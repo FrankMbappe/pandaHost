@@ -15,13 +15,13 @@ import java.util.List;
 public class PostData implements Data<Post> {
     MySQLConnection mySQLConn;
 
-    public PostData(MySQLConnection mySQLConn){
+    public PostData(MySQLConnection mySQLConn) {
         this.mySQLConn = mySQLConn;
     }
 
     @Override
     public void init() {
-        if(mySQLConn.exists()){
+        if (mySQLConn.exists()) {
             mySQLConn.executeUpdateStatement("CREATE TABLE IF NOT EXISTS `Posts` (" +
                     "`id` INT AUTO_INCREMENT PRIMARY KEY," +
                     "`authorId` VARCHAR(255) NOT NULL," +
@@ -31,10 +31,10 @@ public class PostData implements Data<Post> {
                     "`fileSize` DOUBLE," +
                     "`uploadDate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
                     "`lastUpdate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" +
-            ")", true);
+                    ")", true);
             System.out.println("[PostData, init()] | Table 'Posts' created.");
 
-        } else{
+        } else {
             System.out.println("[PostData, init()] | Error: The connection doesn't exist.");
         }
     }
@@ -45,7 +45,7 @@ public class PostData implements Data<Post> {
             ArrayList<Post> posts = new ArrayList<>();
             ResultSet rs = mySQLConn.getStatement(true).executeQuery("SELECT * FROM posts");
             int i = 0;
-            while(rs.next()){
+            while (rs.next()) {
                 posts.add(new Post(
                         rs.getInt("id"),
                         rs.getString("authorId"),
@@ -55,7 +55,8 @@ public class PostData implements Data<Post> {
                         rs.getDouble("fileSize"),
                         rs.getTimestamp("uploadDate"),
                         rs.getTimestamp("lastUpdate")
-                )); i++;
+                ));
+                i++;
             }
             System.out.println(String.format("[PostData, getAll()] | %d row(s) retrieved.", i));
             return posts;
@@ -67,13 +68,13 @@ public class PostData implements Data<Post> {
     }
 
     @Override
-    public ArrayList<Post> getMatchingData(Filter filter){
+    public ArrayList<Post> getMatchingData(Filter filter) {
         var posts = new ArrayList<Post>();
 
         // I iterate each post
-        for (Post post : getAll()){
+        for (Post post : getAll()) {
             // and I check if it matches the filter
-            if(post.matchesFilter((PostFilter) filter)){
+            if (post.matchesFilter((PostFilter) filter)) {
                 posts.add(post);
             }
         }
@@ -86,6 +87,16 @@ public class PostData implements Data<Post> {
     }
 
     @Override
+    public Post getMatchingItem(Filter filter) {
+        return getMatchingData(filter).get(0);
+    }
+
+    @Override
+    public String getMatchingItemToJson(Filter filter) {
+        return new Gson().toJson(getMatchingItem(filter));
+    }
+
+    @Override
     public Post get(Object id) { // ID should be an int
         List<Post> posts = getAll();
         return posts.get(posts.indexOf(new Post((int) id)));
@@ -93,7 +104,16 @@ public class PostData implements Data<Post> {
 
     @Override
     public void add(Post post) {
-        // TODO: Add a post logic
+        String sql = String.format("INSERT INTO posts (id, authorId, message, fileName, fileExt, fileSize) VALUES (%d, '%s', '%s', '%s', '%s', %f)",
+                post.getId(),
+                post.getAuthorId(),
+                post.getMessage(),
+                post.getFileName(),
+                post.getFileExt(),
+                post.getFileSize()
+        );
+        mySQLConn.executeUpdateStatement(sql, true);
+        System.out.println(String.format("[PostData, add()] | The post from user '%s' with the ID <%d> was added.", post.getAuthorId(), post.getId()));
     }
 
     @Override

@@ -3,6 +3,7 @@ package panda.host.server;
 import panda.host.config.database.MySQLConfigs;
 import panda.host.config.database.MySQLConnection;
 import panda.host.model.data.PostData;
+import panda.host.model.data.UserData;
 import panda.host.model.models.MySQLConfig;
 
 import java.rmi.RemoteException;
@@ -14,13 +15,15 @@ public class PandaRemoteImpl extends UnicastRemoteObject implements PandaRemote 
     }
 
     @Override
-    public String getPosts(String pandaCode) {
-        System.out.println("\n\n[PandaRemote, getPosts()] | Method remotely requested.");
+    public String getPosts(String pandaCode) throws RemoteException {
+        System.out.println("\n#\tPANDA@OPERATION");
+        System.out.println("-----------------------");
+        System.out.println("[PandaRemote, getPosts()] | Method remotely requested.");
         MySQLConfig mySQLConfiguration = MySQLConfigs.get();
 
         if (mySQLConfiguration != null) {
 
-            System.out.println("[PandaRemote, getPosts()] | Attempting to access the database");
+            System.out.println("[PandaRemote, getPosts()] | Attempting to access the database...");
 
             // I create a mysql connection
             MySQLConnection connection = new MySQLConnection(mySQLConfiguration);
@@ -41,7 +44,36 @@ public class PandaRemoteImpl extends UnicastRemoteObject implements PandaRemote 
     }
 
     @Override
-    public boolean addPost(String addPostRequest){
+    public boolean addPost(String addPostRequest) throws RemoteException {
         return false;
+    }
+
+    @Override
+    public String logUserIn(String pandaCode) throws RemoteException {
+        System.out.println("\n#\tPANDA@OPERATION");
+        System.out.println("-----------------------");
+        System.out.println("[PandaRemote, logUserIn()] | Method remotely requested.");
+        MySQLConfig mySQLConfiguration = MySQLConfigs.get();
+
+        if (mySQLConfiguration != null) {
+
+            System.out.println("[PandaRemote, logUserIn()] | Attempting to access the database..");
+
+            // I create a mysql connection
+            MySQLConnection connection = new MySQLConnection(mySQLConfiguration);
+
+            // I get the authentication object generated from the credentials
+            String authObjectToJson = new UserData(connection).getAuthObjectFromPandaCodeToJson(pandaCode);
+            System.out.println(String.format("[PandaRemote, logUserIn()] | Auth object generated and converted to JSON: '%s'.",
+                    authObjectToJson));
+
+            // I close the connection, I don't need it anymore
+            connection.close();
+
+            System.out.println("PandaRemote, logUserIn()] | Task ended.");
+
+            return authObjectToJson;
+        }
+        return null;
     }
 }

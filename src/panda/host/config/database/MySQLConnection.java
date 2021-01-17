@@ -20,7 +20,8 @@ public class MySQLConnection implements AutoCloseable {
             System.out.println("[MySQLConnection] | Successfully connected.");
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("[MySQLConnection] | Error: the MySQL server isn't active.");
+//            e.printStackTrace();
         }
     }
 

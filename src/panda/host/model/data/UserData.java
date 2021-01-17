@@ -1,11 +1,16 @@
 package panda.host.model.data;
 
+import com.google.gson.Gson;
 import panda.host.config.database.MySQLConnection;
+import panda.host.model.models.Authentication;
 import panda.host.model.models.User;
+import panda.host.model.models.filters.Credentials;
 import panda.host.model.models.filters.Filter;
+import panda.host.utils.Panda;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,13 +57,31 @@ public class UserData implements Data<User> {
     }
 
     @Override
-    public ArrayList<User> getMatchingData(Filter filter) {
-        return null;
+    public ArrayList<User> getMatchingData(Filter credentials) {
+        ArrayList<User> users = new ArrayList<>();
+
+        for (User user : getAll()){
+            if(user.matchesCredentials((Credentials) credentials)){
+                users.add(user);
+            }
+        }
+
+        return users;
     }
 
     @Override
-    public String getMatchingDataToJson(Filter filter) {
-        return null;
+    public String getMatchingDataToJson(Filter credentials) {
+        return new Gson().toJson(getMatchingData(credentials));
+    }
+
+    @Override
+    public User getMatchingItem(Filter credentials) {
+        return getMatchingData(credentials).get(0);
+    }
+
+    @Override
+    public String getMatchingItemToJson(Filter credentials) {
+        return new Gson().toJson(getMatchingItem(credentials));
     }
 
     @Override
@@ -76,7 +99,34 @@ public class UserData implements Data<User> {
     }
 
     @Override
-    public String getMatchingDataFromPandaCode(String marshalledCode) {
-        return null;
+    public String getMatchingDataFromPandaCode(String pandaCode) {
+        // Here I assume that the panda code sent by the client matches the pattern of PANDAOP_REQUEST_GET_CONNECTION
+        // Therefore I can freely create a Credential object using the ID and password contained in the panda code.
+        ArrayList<String> credentialProperties = Panda.extractFiltersFromPandaCode(pandaCode);
+
+        // I create my credential variable, using the ctor that converts these params from String to their normal type.
+        Credentials credentials = new Credentials(credentialProperties);
+
+        // I return the matching object, applying the filters beforehand extracted
+        return getMatchingItemToJson(credentials);
+    }
+
+    public Authentication getAuthObjectFromPandaCode(String pandaCode){
+        // I create a credential object from the panda code:
+        Credentials credentials = new Credentials(Panda.extractFiltersFromPandaCode(pandaCode));
+
+        // I find the user matching these credentials in the db:
+        User matchingUser = getMatchingItem(credentials);
+
+        // Depending on the value of matching user, I return an authentication object:
+        if (matchingUser != null){
+            return new Authentication(1, matchingUser, LocalDateTime.now());
+        } else {
+            return new Authentication(0);
+        }
+    }
+
+    public String getAuthObjectFromPandaCodeToJson(String pandaCode){
+        return new Gson().toJson(getAuthObjectFromPandaCode(pandaCode));
     }
 }

@@ -1,8 +1,8 @@
-package panda.host.controller;
+package panda.host.ui.controller;
 
 import javafx.scene.control.Label;
 
-public class Controller {
+public class HomeController {
     public Label title;
 
 }
