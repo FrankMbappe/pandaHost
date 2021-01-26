@@ -75,15 +75,10 @@ public class Panda {
         // I changed what's below since I'm now dealing with GUI but no more console.
         // 'config == null' means that we are initializing PandaHost from scratch
         if(configurations == null){
-            // That's why I input the configurations here
-//            consoleInputInitConfigs();
-//            configurations = Configs.getMySQLConfig();
             throw new BadPandaConfigsException();
         }
 
         // Establishing the connection
-//        Current.dbConnection = new MySQLConnection(configurations);
-
         if(Current.dbConnection.exists()){
             UserData userData = new UserData();
             PostData postData = new PostData();
@@ -98,8 +93,6 @@ public class Panda {
             // Posts' table creation
             postData.init();
 
-            // Closing the connection
-            //mySQLConn.close();
 
             System.out.println("[Panda, init()] | Panda was successfully configured.");
 
@@ -297,6 +290,7 @@ public class Panda {
     public static void closePanda(Node aNode){
         Stage stage = (Stage) aNode.getScene().getWindow();
         stage.close();
+        Current.dbConnection.close();
         System.exit(0);
     }
 
@@ -304,12 +298,16 @@ public class Panda {
     public static File openFileDialog(Node aNode, FileChooser.ExtensionFilter... filters){
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose a file");
+
         fileChooser.getExtensionFilters().addAll(filters);
 
         return fileChooser.showOpenDialog(aNode.getScene().getWindow());
     }
     // Getting a file extension filter
     public static  FileChooser.ExtensionFilter genFileFilter(String name, String extension){
+        if (extension.equals("")){
+           return  new FileChooser.ExtensionFilter(name, "*");
+        }
         return new FileChooser.ExtensionFilter(name, "*." + extension);
     }
 }

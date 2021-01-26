@@ -15,9 +15,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        // To add SVG support to PandaHost
-//        SvgImageLoaderFactory.install();
-
         // I will always have to put the value for current db connection
         Current.dbConnection = new MySQLConnection(Objects.requireNonNull(Configs.getMySQLConfig()));
 
@@ -27,8 +24,12 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-
     public static void main(String[] args) {
         launch(args);
+    }
+
+    @Override
+    public void stop() {
+        System.exit(0);
     }
 }

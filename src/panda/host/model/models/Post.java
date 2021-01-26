@@ -2,6 +2,7 @@ package panda.host.model.models;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.jetbrains.annotations.NotNull;
 import panda.host.model.models.filters.PostFilter;
 import panda.host.utils.Panda;
 
@@ -36,17 +37,12 @@ public class Post {
         this.authorId = authorId;
         this.message = message;
         this.tags = tags;
-        try{
-            // e.g: If the file is "src/host/files/folder/document.txt
-            this.fileName = FilenameUtils.getBaseName(file.getName()); // fileName = "document"
-            this.fileExt = FilenameUtils.getExtension(file.getName()); // fileExt = "txt"
-            this.fileSize = file.length(); // fileSize = Size of document.txt in bytes
-            // Converts the file to an array of bytes (byte[]), then store it in the fileToBytes property
-            this.fileToBytes = FileUtils.readFileToByteArray(file);
+        setFile(file);
+    }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public Post(String authorId, File file){
+        this.authorId = authorId;
+        setFile(file);
     }
 
     public Post(int id, String authorId, String message, String tags, String fileId, String fileName, String fileExt, long fileSize, Timestamp uploadDate, Timestamp lastUpdate) {
@@ -80,6 +76,10 @@ public class Post {
         this.id = id;
     }
 
+
+
+
+
     @Override
     public boolean equals(Object obj) {
         if (obj.getClass().equals(Post.class)) {
@@ -88,7 +88,7 @@ public class Post {
         return false;
     }
 
-    public boolean matchesFilter(PostFilter filter) {
+    public boolean matchesFilter(@NotNull PostFilter filter) {
         // TODO: Add the school class filter
         // If the filter ask for all, therefore this condition will be always true
         return filter.isAll() || fileExt.equalsIgnoreCase(filter.getFileType());
@@ -97,6 +97,37 @@ public class Post {
     public boolean containsAFile(){
         return fileToBytes != null && fileName != null;
     }
+
+    public void setFile(File file){
+        try{
+            // e.g: If the file is "src/host/files/folder/document.txt
+            this.fileName = FilenameUtils.getBaseName(file.getName()); // fileName = "document"
+            this.fileExt = FilenameUtils.getExtension(file.getName()); // fileExt = "txt"
+            this.fileSize = file.length(); // fileSize = Size of document.txt in bytes
+            // Converts the file to an array of bytes (byte[]), then store it in the fileToBytes property
+            this.fileToBytes = FileUtils.readFileToByteArray(file);
+
+        } catch (Exception e) {
+            System.out.println("[Post] | Something went wrong while adding the file to the post");
+            System.err.println(e.getMessage());
+            deleteFileProperties();
+        }
+    }
+
+    public void deleteFileProperties(){
+        this.fileName = null;
+        this.fileExt = null;
+        this.fileSize = 0;
+        this.fileToBytes = null;
+    }
+
+    public ArrayList<String> getTagsToList(){
+        return (ArrayList<String>) Arrays.asList(tags.split(Panda.DEFAULT_SPLIT_CHAR));
+    }
+
+
+
+
 
     public int getId() {
         return id;
@@ -124,10 +155,6 @@ public class Post {
 
     public String getTags() {
         return tags;
-    }
-
-    public ArrayList<String> getTagsToList(){
-        return (ArrayList<String>) Arrays.asList(tags.split(Panda.DEFAULT_SPLIT_CHAR));
     }
 
     public void setTags(String tags) {

@@ -17,11 +17,14 @@ public class PandaServer extends UnicastRemoteObject {
 
     }
 
-    public void launch() {
+    public void run() {
         try{
             System.setProperty("java.rmi.server.hostname","192.168.173.1");
             Registry registry = LocateRegistry.createRegistry(Panda.DEFAULT_PORT);
             registry.rebind(Panda.DEFAULT_REMOTE_URL, new PandaRemoteImpl());
+            System.out.println("\n-----------------------------------------");
+            System.out.println("+              PANDA@SERVER             +");
+            System.out.println("-----------------------------------------");
             System.out.println("Object registered: " + Panda.DEFAULT_REMOTE_URL);
 
             System.out.println("The Panda server is running...");

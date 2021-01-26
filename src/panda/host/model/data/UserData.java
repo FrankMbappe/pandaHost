@@ -1,6 +1,8 @@
 package panda.host.model.data;
 
 import com.google.gson.Gson;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.jetbrains.annotations.NotNull;
 import panda.host.config.database.MySQLConnection;
 import panda.host.model.models.Authentication;
@@ -17,11 +19,16 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserData implements Data<User> {
+public class UserData implements Data<User, String> {
+    public static ObservableList<User> userObservableList = FXCollections.observableArrayList();
     MySQLConnection mySQLConn;
 
     public UserData(){
         this.mySQLConn = Current.dbConnection;
+    }
+
+    private void updateUserObservableList(){
+        userObservableList.setAll(getAll());
     }
 
     @Override
@@ -33,6 +40,10 @@ public class UserData implements Data<User> {
                     "`permissions` INT" +
             ")", true);
             System.out.println("[UserData, init()] | Table 'Users' created.");
+
+            // Update observable
+            updateUserObservableList();
+
         }else{
             System.out.println("[UserData, init()] | Error: The connection doesn't exist.");
         }
@@ -97,9 +108,9 @@ public class UserData implements Data<User> {
     }
 
     @Override
-    public User get(Object username) {
+    public User get(String username) {
         List<User> users = getAll();
-        return users.get(users.indexOf(new User((String) username)));
+        return users.get(users.indexOf(new User(username)));
     }
 
     @Override
@@ -108,6 +119,10 @@ public class UserData implements Data<User> {
                 user.getUsername(),user.getPassword(), user.getPermissions());
         try {
             mySQLConn.getStatement(true).executeUpdate(sql);
+
+            // Update observable
+            updateUserObservableList();
+
         } catch (Exception e) {
             System.out.println(String.format("[UserData, add()] | Error ! Failed to add '%s' in the database.", user.getUsername()));
             return false;
@@ -116,13 +131,39 @@ public class UserData implements Data<User> {
         return true;
     }
 
-    public boolean addAll(@NotNull ArrayList<User> users){
-        boolean allUsersHaveBeenAdded = true;
-        for (User user : users){
-            boolean userAdded = add(user);
-            allUsersHaveBeenAdded = allUsersHaveBeenAdded && userAdded;
+    @Override
+    public boolean remove(String userId) {
+        String sql = String.format("DELETE FROM users WHERE username = '%s'", userId);
+        try {
+            mySQLConn.getStatement(true).executeUpdate(sql);
+
+            // Update observable
+            updateUserObservableList();
+
+        } catch (Exception e) {
+            System.out.println(String.format("[UserData, remove()] | Error ! Failed to remove '%s' from the database.", userId));
+            return false;
         }
-        return allUsersHaveBeenAdded;
+        System.out.println(String.format("[UserData, remove()] | User '%s' was removed.", userId));
+        return true;
+    }
+
+    @Override
+    public boolean edit(@NotNull User user) {
+        String sql = String.format("UPDATE users SET password='%s', permissions=%d WHERE username='%s'",
+                user.getPassword(), user.getPermissions(), user.getUsername());
+        try {
+            mySQLConn.getStatement(true).executeUpdate(sql);
+
+            // Update observable
+            updateUserObservableList();
+
+        } catch (Exception e) {
+            System.out.println(String.format("[UserData, edit()] | Error ! Failed to edit '%s' in the database.", user.getUsername()));
+            return false;
+        }
+        System.out.println(String.format("[UserData, edit()] | User '%s' was edited.", user.getUsername()));
+        return true;
     }
 
     @Override
@@ -136,6 +177,15 @@ public class UserData implements Data<User> {
 
         // I return the matching object, applying the filters beforehand extracted
         return getMatchingItemToJson(credentials);
+    }
+
+    public boolean addAll(@NotNull ArrayList<User> users){
+        boolean allUsersHaveBeenAdded = true;
+        for (User user : users){
+            boolean userAdded = add(user);
+            allUsersHaveBeenAdded = allUsersHaveBeenAdded && userAdded;
+        }
+        return allUsersHaveBeenAdded;
     }
 
     public Authentication getAuthObjectFromPandaCode(String pandaCode){

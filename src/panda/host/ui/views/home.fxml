@@ -41,17 +41,19 @@
 
         <HBox styleClass="grids-box">
             <VBox HBox.hgrow="SOMETIMES" styleClass="grid-box">
-                <HBox spacing="10">
-                    <HBox spacing="8" HBox.hgrow="NEVER">
+                <HBox>
+                    <HBox spacing="5" HBox.hgrow="NEVER">
                         <StackPane styleClass="db-logo, icon" />
                         <Label styleClass="table-title" text="Realtime Database" />
                         <Label fx:id="lb_fileStats" styleClass="table-props" text="(44 files/8.5MB)" />
                     </HBox>
-                    <Separator orientation="VERTICAL" />
-                    <HBox spacing="15" HBox.hgrow="ALWAYS">
-                        <StackPane styleClass="icon-add, icon" />
-                        <StackPane styleClass="icon-remove, icon" />
-                        <StackPane styleClass="icon-refresh, icon" />
+
+                    <StackPane HBox.hgrow="ALWAYS"/>
+
+                    <HBox spacing="15" HBox.hgrow="NEVER">
+                        <StackPane fx:id="btn_filesAdd" styleClass="icon-add, icon" onMouseClicked="#addFile" />
+                        <StackPane fx:id="btn_filesRemove" styleClass="icon-remove, icon" onMouseClicked="#removeFile" />
+                        <StackPane fx:id="btn_filesRefresh" styleClass="icon-refresh, icon" onMouseClicked="#refreshFiles" />
                     </HBox>
                 </HBox>
                 <TableView fx:id="table_files" minHeight="200.0" VBox.vgrow="ALWAYS">
@@ -67,17 +69,19 @@
             </VBox>
 
             <VBox HBox.hgrow="SOMETIMES" styleClass="grid-box">
-                <HBox spacing="10">
+                <HBox>
                     <HBox spacing="8" HBox.hgrow="NEVER">
                         <StackPane styleClass="users-logo, icon" />
                         <Label styleClass="table-title" text="Users" />
                         <Label fx:id="lb_userStats" styleClass="table-props" text="(52 registered)" />
                     </HBox>
-                    <Separator orientation="VERTICAL" />
-                    <HBox spacing="15" HBox.hgrow="ALWAYS">
-                        <StackPane styleClass="icon-add, icon" />
-                        <StackPane styleClass="icon-remove, icon" />
-                        <StackPane styleClass="icon-refresh, icon" />
+
+                    <StackPane HBox.hgrow="ALWAYS"/>
+
+                    <HBox spacing="15" HBox.hgrow="NEVER">
+                        <StackPane fx:id="btn_usersAdd" styleClass="icon-add, icon" onMouseClicked="#addUser" />
+                        <StackPane fx:id="btn_usersRemove" styleClass="icon-remove, icon" onMouseClicked="#removeUser"/>
+                        <StackPane fx:id="btn_usersRefresh" styleClass="icon-refresh, icon" onMouseClicked="#refreshUsers"/>
                     </HBox>
                 </HBox>
                 <TableView fx:id="table_users" minHeight="200.0" VBox.vgrow="ALWAYS">

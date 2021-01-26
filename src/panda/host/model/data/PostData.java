@@ -1,6 +1,8 @@
 package panda.host.model.data;
 
 import com.google.gson.Gson;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.apache.commons.io.FileUtils;
 import panda.host.config.database.MySQLConnection;
 import panda.host.model.models.PandaFile;
@@ -19,11 +21,16 @@ import java.util.List;
 import static panda.host.utils.Panda.generateAPandaFilePath;
 import static panda.host.utils.Panda.getARandomFileId;
 
-public class PostData implements Data<Post> {
+public class PostData implements Data<Post, Integer> {
+    public static ObservableList<PandaFile> fileObservableList = FXCollections.observableArrayList();
     MySQLConnection mySQLConn;
 
     public PostData() {
         this.mySQLConn = Current.dbConnection;
+    }
+
+    private void updatePostObservableList(){
+        fileObservableList.setAll(getAllFiles());
     }
 
     @Override
@@ -42,6 +49,9 @@ public class PostData implements Data<Post> {
                     "`lastUpdate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" +
                     ")", true);
             System.out.println("[PostData, init()] | Table 'Posts' created.");
+
+            // Update observable
+            updatePostObservableList();
 
         } else {
             System.out.println("[PostData, init()] | Error: The connection doesn't exist.");
@@ -81,11 +91,12 @@ public class PostData implements Data<Post> {
     public ArrayList<PandaFile> getAllFiles(){
         try {
             ArrayList<PandaFile> files = new ArrayList<>();
-            ResultSet rs = mySQLConn.getStatement(true).executeQuery("SELECT fileId, lastUpdate, fileName, fileExt, fileSize, authorId FROM posts");
+            ResultSet rs = mySQLConn.getStatement(true).executeQuery("SELECT fileId, id, lastUpdate, fileName, fileExt, fileSize, authorId FROM posts");
             int i = 0;
             while (rs.next()) {
                 files.add(new PandaFile(
                         rs.getString("fileId"),
+                        rs.getInt("id"),
                         rs.getTimestamp("lastUpdate"),
                         rs.getString("fileName"),
                         rs.getString("fileExt"),
@@ -146,9 +157,9 @@ public class PostData implements Data<Post> {
     }
 
     @Override
-    public Post get(Object id) { // ID is an int
+    public Post get(Integer id) { // ID is an int
         List<Post> posts = getAll();
-        return posts.get(posts.indexOf(new Post((int) id)));
+        return posts.get(posts.indexOf(new Post(id)));
     }
 
     @Override
@@ -178,6 +189,10 @@ public class PostData implements Data<Post> {
             // I don't use the executeUpdate() method of MySQLConnection 'cause I want to check if it throws an exception here
             mySQLConn.getStatement(true).executeUpdate(sql);
             System.out.println("[PostData, add()] | A post has been successfully added.");
+
+            // Update observable content
+            updatePostObservableList();
+
             return true;
 
         } catch (SQLException e) {
@@ -185,6 +200,53 @@ public class PostData implements Data<Post> {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public boolean remove(Integer postId) {
+        String sql = String.format("DELETE FROM posts WHERE id = %d", postId);
+        try {
+            mySQLConn.getStatement(true).executeUpdate(sql);
+
+            // Update observable
+            updatePostObservableList();
+
+        } catch (Exception e) {
+            System.out.println(String.format("[PostData, remove()] | Error ! Failed to drop post with id '%d' from the database.", postId));
+            return false;
+        }
+        System.out.println(String.format("[PostData, remove()] | Post with id '%d' was removed.", postId));
+        return true;
+    }
+
+    @Override
+    public boolean edit(Post post) {
+        String sql = String.format("UPDATE posts " +
+                        "SET " +
+                            "authorId = '%s', " +
+                            "message = '%s', " +
+                            "tags = '%s', " +
+                            "fileId = '%s', " +
+                            "fileName = '%s', " +
+                            "fileExt = '%s', " +
+                            "fileSize = %d, " +
+                            "lastUpdate = CURRENT_TIMESTAMP " +
+                        "WHERE id = %d",
+                post.getAuthorId(), post.getMessage(), post.getTags(), post.getFileId(), post.getFileName(),
+                post.getFileExt(), post.getFileSize(),
+                post.getId());
+        try {
+            mySQLConn.getStatement(true).executeUpdate(sql);
+
+            // Update observable
+            updatePostObservableList();
+
+        } catch (Exception e) {
+            System.out.println(String.format("[PostData, edit()] | Error ! Failed to edit post with id '%d' in the database.", post.getId()));
+            return false;
+        }
+        System.out.println(String.format("[PostData, edit()] | Post with id '%d' was edited.", post.getId()));
+        return true;
     }
 
     public boolean postFileSuccessfullyAdded(Post post){

@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 public class PandaFile {
     private String id;
+    private int postId;
     private LocalDateTime date;
     private String fileName;
     private String type;
@@ -24,8 +25,9 @@ public class PandaFile {
         this.uploaderId = uploaderId;
     }
 
-    public PandaFile(String id, Timestamp date, String fileName, String type, long size, String uploaderId) {
+    public PandaFile(String id, int postId, Timestamp date, String fileName, String type, long size, String uploaderId) {
         this.id = id;
+        this.postId = postId;
         this.date = date.toLocalDateTime();
         this.fileName = fileName;
         this.type = type;
@@ -59,7 +61,7 @@ public class PandaFile {
     }
 
     public String getType() {
-        return type;
+        return type.toUpperCase();
     }
 
     public void setType(String type) {
@@ -89,5 +91,13 @@ public class PandaFile {
 
     public void setUploaderId(String uploaderId) {
         this.uploaderId = uploaderId;
+    }
+
+    public int getPostId() {
+        return postId;
+    }
+
+    public void setPostId(int postId) {
+        this.postId = postId;
     }
 }

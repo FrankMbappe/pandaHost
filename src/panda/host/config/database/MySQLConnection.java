@@ -16,12 +16,18 @@ public class MySQLConnection implements AutoCloseable {
 
     public MySQLConnection(MySQLConfig config) {
         try {
-            System.out.println("[MySQLConnection] | Connecting to the database...");
+            System.out.println("\n-----------------------------------------");
+            System.out.println("+            MYSQL@CONNECTION           +");
+            System.out.println("-----------------------------------------");
+
+            System.out.println("[MySQL] | Connecting to the database...");
             connection = DriverManager.getConnection(config.getDbUrl(), config.getUsername(), config.getPassword());
-            System.out.println("[MySQLConnection] | Successfully connected.");
+            System.out.println("[MySQL] | Successfully connected.");
+
+            System.out.println("-----------------------------------------\n");
 
         } catch (SQLException e) {
-            System.out.println("[MySQLConnection] | Error: Failed to connect to the database.");
+            System.out.println("[MySQL] | Error: Failed to connect to the database.");
 //            e.printStackTrace();
         }
     }

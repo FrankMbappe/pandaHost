@@ -15,7 +15,7 @@ public class Test {
 
         try {
             PandaServer server = new PandaServer();
-            server.launch();
+            server.run();
 
         } catch (RemoteException e) {
             e.printStackTrace();

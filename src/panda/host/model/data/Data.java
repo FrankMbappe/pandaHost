@@ -7,8 +7,9 @@ import java.util.ArrayList;
 /**
  * Set of methods used to interact with a data of type T
  * @param <T> Handling type of data
+ * @param <I> Handling type of Id the data uses
  */
-public interface Data<T> {
+public interface Data<T, I> {
 
     /**
      * Creates a table of T elements in a database
@@ -54,13 +55,25 @@ public interface Data<T> {
      * @param id represents the ID of the requested T element
      * @return the T element as an object of T class
      */
-    T get(Object id);
+    T get(I id);
 
     /**
      * Adds a T element in a database
      * @param t is the T element as an object
      */
     boolean add(T t);
+
+    /**
+     * Drop a T element from a database
+     * @param id is identifier of the element in the database
+     */
+    boolean remove(I id);
+
+    /**
+     * Edit a T element in a database
+     * @param t is the T element as an object
+     */
+    boolean edit(T t);
 
     /**
      * Get values that are filtered using a filter contained in a marshalled code

@@ -61,3 +61,13 @@
             -fx-pref-width: 500;
             -fx-pref-height: 300;
         }
+
+#column_files_id{
+    -fx-pref-width: 25;
+}
+#column_files_type{
+    -fx-font-style: italic;
+}
+#column_files_uploader{
+    -fx-font-family: "SF Pro Display Semibold";
+}
