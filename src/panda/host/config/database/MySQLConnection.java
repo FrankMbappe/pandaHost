@@ -1,5 +1,6 @@
 package panda.host.config.database;
 
+import panda.host.config.Configs;
 import panda.host.model.models.MySQLConfig;
 
 import java.sql.Connection;
@@ -20,7 +21,7 @@ public class MySQLConnection implements AutoCloseable {
             System.out.println("[MySQLConnection] | Successfully connected.");
 
         } catch (SQLException e) {
-            System.out.println("[MySQLConnection] | Error: the MySQL server isn't active.");
+            System.out.println("[MySQLConnection] | Error: Failed to connect to the database.");
 //            e.printStackTrace();
         }
     }
@@ -38,7 +39,7 @@ public class MySQLConnection implements AutoCloseable {
     }
 
     public Connection get(boolean dbExists){
-        MySQLConfig config = MySQLConfigs.get();
+        MySQLConfig config = Configs.getMySQLConfig();
         try{
             if(config != null){
                 if(dbExists){

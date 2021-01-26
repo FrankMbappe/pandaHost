@@ -8,9 +8,12 @@ public interface PandaRemote extends Remote {
     String getPosts(String postRequest) throws RemoteException;
 
     // Add a new post to the db, and returns true if the post has been effectively added.
-    boolean addPost(String addPostRequest) throws RemoteException;
+    boolean addPost(String postToJson) throws RemoteException;
+
+    // Get a post' file stored in the server
+    byte[] downloadPostFile(String userId, String fileId, String fileExt) throws RemoteException;
 
     // Get an authentication object which contains the user's info and the auth status.
-    String logUserIn(String userRequest) throws RemoteException;
+    String logUserIn(String authRequest) throws RemoteException;
 
 }

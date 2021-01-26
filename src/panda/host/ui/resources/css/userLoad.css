@@ -1,0 +1,48 @@
+.xlsx-notice-picture {
+    -fx-background-image: url("../images/xlsx_notice_picture.png");
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+    -fx-pref-height: 300;
+}
+.xslx-logo{
+    -fx-background-image: url("../images/xlsx_logo.png");
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+    -fx-pref-width: 30;
+
+}
+
+.subflow{
+    /*-fx-border-width: 1;*/
+    /*-fx-border-style: solid;*/
+    /*-fx-border-color: green;*/
+    -fx-padding: 0 25 0 25;
+}
+
+.subflow-hbox-title {
+    -fx-spacing: 13;
+    -fx-padding: 10;
+}
+
+.subflow-vbox-file{
+    -fx-spacing: 6;
+    -fx-alignment: center;
+    -fx-padding: 15;
+}
+    .subflow-hbox-uri{
+        -fx-spacing: 8;
+        -fx-alignment: center;
+    }
+        .label-uri{
+            -fx-font-family: "SF Pro Text Regular";
+            -fx-font-size: 15;
+            -fx-padding: 5 8 7 8;
+            -fx-border-radius: 6;
+            -fx-background-color: #F1F1F1;
+            -fx-min-width: 275;
+        }
+
+    .label-file-description{
+        -fx-font-family: "SF Pro Text Medium";
+        -fx-font-size: 12;
+    }

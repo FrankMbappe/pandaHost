@@ -1,15 +1,18 @@
 package panda.host.model.data;
 
 import com.google.gson.Gson;
+import org.jetbrains.annotations.NotNull;
 import panda.host.config.database.MySQLConnection;
 import panda.host.model.models.Authentication;
 import panda.host.model.models.User;
 import panda.host.model.models.filters.Credentials;
 import panda.host.model.models.filters.Filter;
+import panda.host.utils.Current;
 import panda.host.utils.Panda;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +20,10 @@ import java.util.List;
 public class UserData implements Data<User> {
     MySQLConnection mySQLConn;
 
-    public UserData(MySQLConnection mySQLConn){
-        this.mySQLConn = mySQLConn;
+    public UserData(){
+        this.mySQLConn = Current.dbConnection;
     }
+
     @Override
     public void init(){
         if(mySQLConn.exists()){
@@ -66,6 +70,8 @@ public class UserData implements Data<User> {
             }
         }
 
+        System.out.println(String.format("[UserData, getMatchingData()] | The matching data array size is %d", users.size()));
+
         return users;
     }
 
@@ -76,7 +82,13 @@ public class UserData implements Data<User> {
 
     @Override
     public User getMatchingItem(Filter credentials) {
-        return getMatchingData(credentials).get(0);
+        ArrayList<User> matchingData = getMatchingData(credentials);
+
+        if(matchingData.size() < 1){
+            return null;
+        } else {
+            return matchingData.get(0);
+        }
     }
 
     @Override
@@ -91,11 +103,26 @@ public class UserData implements Data<User> {
     }
 
     @Override
-    public void add(User user) {
+    public boolean add(@NotNull User user) {
         String sql = String.format("INSERT INTO users(username, password, permissions) VALUES ('%s', '%s', %d)",
                 user.getUsername(),user.getPassword(), user.getPermissions());
-        mySQLConn.executeUpdateStatement(sql, true);
+        try {
+            mySQLConn.getStatement(true).executeUpdate(sql);
+        } catch (Exception e) {
+            System.out.println(String.format("[UserData, add()] | Error ! Failed to add '%s' in the database.", user.getUsername()));
+            return false;
+        }
         System.out.println(String.format("[UserData, add()] | User '%s' was added.", user.getUsername()));
+        return true;
+    }
+
+    public boolean addAll(@NotNull ArrayList<User> users){
+        boolean allUsersHaveBeenAdded = true;
+        for (User user : users){
+            boolean userAdded = add(user);
+            allUsersHaveBeenAdded = allUsersHaveBeenAdded && userAdded;
+        }
+        return allUsersHaveBeenAdded;
     }
 
     @Override
@@ -114,14 +141,19 @@ public class UserData implements Data<User> {
     public Authentication getAuthObjectFromPandaCode(String pandaCode){
         // I create a credential object from the panda code:
         Credentials credentials = new Credentials(Panda.extractFiltersFromPandaCode(pandaCode));
+        System.out.println(String.format("[UserData, getAuthObjectFromPandaCode()] | Credentials' object retrieved: '%s'.",
+                credentials.toString()));
 
         // I find the user matching these credentials in the db:
         User matchingUser = getMatchingItem(credentials);
 
         // Depending on the value of matching user, I return an authentication object:
         if (matchingUser != null){
-            return new Authentication(1, matchingUser, LocalDateTime.now());
+            System.out.println(String.format("[UserData, getAuthObjectFromPandaCode()] | The matching user is '%s'.",
+                    matchingUser.toString()));
+            return new Authentication(1, matchingUser, Timestamp.valueOf(LocalDateTime.now()));
         } else {
+            System.out.println("[UserData, getAuthObjectFromPandaCode()] | No user matched the credentials.");
             return new Authentication(0);
         }
     }

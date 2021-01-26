@@ -1,7 +1,5 @@
 package panda.host;
 
-import panda.host.config.database.MySQLConfigs;
-import panda.host.model.models.MySQLConfig;
 import panda.host.model.models.User;
 import panda.host.server.app.PandaServer;
 
@@ -12,11 +10,8 @@ public class Test {
     public static void main(String[] args) {
         System.out.println("-- PandaHost Console --");
 
-        // Initializing Panda from the configurations' file
-//        Panda.init(MySQLConfigs.get());
-//        UserData userDa
-//        ta = new UserData(new MySQLConnection(Objects.requireNonNull(MySQLConfigs.get())));
-//        userData.add(getUser());
+        // Initializing PandaHost from scratch
+//        Panda.init(null);
 
         try {
             PandaServer server = new PandaServer();
@@ -30,23 +25,6 @@ public class Test {
     }
 
 
-    static void inputInitConfigs(){
-        String server, username, password;
-        Scanner sc = new Scanner(System.in);
-
-        // Server config
-        System.out.println("Enter the server name: ");
-        server = sc.nextLine();
-
-        // Getting credentials
-        System.out.println("Username: ");
-        username = sc.nextLine();
-        System.out.println("Password: ");
-        password = sc.nextLine();
-
-        MySQLConfig config = new MySQLConfig(username, password, server);
-        MySQLConfigs.set(config);
-    }
 
     static User getUser(){
         String username, password;

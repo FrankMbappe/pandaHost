@@ -60,7 +60,7 @@ public interface Data<T> {
      * Adds a T element in a database
      * @param t is the T element as an object
      */
-    void add(T t);
+    boolean add(T t);
 
     /**
      * Get values that are filtered using a filter contained in a marshalled code

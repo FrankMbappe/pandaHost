@@ -1,6 +1,5 @@
 package panda.host.model.models;
 
-
 /**
  * Set of necessary properties to properly establish a connection with MySQL
  */

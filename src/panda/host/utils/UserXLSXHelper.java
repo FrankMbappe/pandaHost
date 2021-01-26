@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class UserXLSXHelper {
+
     public static ArrayList<User> getUserList(String pathToExcelFile, int permissions) {
         ArrayList<User> users = new ArrayList<>();
         try {
@@ -64,9 +65,10 @@ public class UserXLSXHelper {
             return users;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("[UserXLSXHelper, getUserList()] | Error: Something went wrong while parsing the file..");
+//            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
 }

@@ -1,0 +1,63 @@
+.title-logo-horizontal{
+    -fx-pref-height: 30;
+    -fx-pref-width: 137.6;
+}
+.server-id {
+    -fx-font-size: 22;
+    -fx-font-family: "SF Pro Display Semibold";
+}
+.server-logo{
+    -fx-pref-width: 40;
+    -fx-pref-height: 40;
+}
+.info-logo{
+    -fx-pref-width: 14;
+}
+.icon-ok{
+    -fx-pref-width: 14;
+}
+.label-info{
+    -fx-font-family: "SF Pro Display";
+    -fx-font-size: 10;
+    -fx-text-fill: #828282;
+}
+.launch-box {
+    -fx-spacing: 20;
+    -fx-alignment: center;
+    -fx-padding: 50 0 50 0;
+}
+.flow{
+    -fx-spacing: 10;
+    -fx-padding: 3em;
+    -fx-background-color: white;
+}
+
+.icon{
+    -fx-pref-height: 20;
+    -fx-pref-width: 20;
+    -fx-border-radius: 10;
+    -fx-background-color: transparent;
+}
+    .icon:hover{
+        -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 250, 0.5), 10, 0, 0, 0);
+    }
+
+.table-title {
+    -fx-font-family: "SF Pro Text Bold";
+    -fx-font-size: 14;
+}
+
+.table-props {
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 14;
+}
+.grids-box{
+    -fx-spacing: 50;
+}
+    .grid-box{
+        -fx-spacing: 15;
+    }
+        .table-view{
+            -fx-pref-width: 500;
+            -fx-pref-height: 300;
+        }

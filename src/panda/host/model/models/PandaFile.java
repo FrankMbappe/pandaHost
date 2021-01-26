@@ -1,47 +1,93 @@
 package panda.host.model.models;
 
-public class PandaFile {
-    private int id;
-    private String name;
-    private String extension;
-    private double size;
+import panda.host.utils.Panda;
 
-    public PandaFile(int id, String name, String extension, double size) {
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
+public class PandaFile {
+    private String id;
+    private LocalDateTime date;
+    private String fileName;
+    private String type;
+    private String sizeToString;
+    private long size;
+    private String uploaderId;
+
+    public PandaFile(String id, LocalDateTime date, String fileName, String type, long size, String uploaderId) {
         this.id = id;
-        this.name = name;
-        this.extension = extension;
+        this.date = date;
+        this.fileName = fileName;
+        this.type = type;
         this.size = size;
+        this.sizeToString = getSizeToString(size);
+        this.uploaderId = uploaderId;
     }
 
-    public int getId() {
+    public PandaFile(String id, Timestamp date, String fileName, String type, long size, String uploaderId) {
+        this.id = id;
+        this.date = date.toLocalDateTime();
+        this.fileName = fileName;
+        this.type = type;
+        this.size = size;
+        this.sizeToString = getSizeToString(size);
+        this.uploaderId = uploaderId;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getDate() {
+        return Panda.getFormattedDate(date);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
-    public String getExtension() {
-        return extension;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setExtension(String extension) {
-        this.extension = extension;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
-    public double getSize() {
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getSizeToString(){
+        return sizeToString;
+    }
+
+    public String getSizeToString(long size) {
+        return Panda.convertLongSizeToString(size);
+    }
+
+    public long getSize(){
         return size;
     }
 
-    public void setSize(double size) {
+    public void setSize(long size) {
         this.size = size;
+        this.sizeToString = getSizeToString(size);
+    }
+
+    public String getUploaderId() {
+        return uploaderId;
+    }
+
+    public void setUploaderId(String uploaderId) {
+        this.uploaderId = uploaderId;
     }
 }

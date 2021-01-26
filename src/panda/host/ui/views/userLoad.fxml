@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="panda.host.ui.controllers.UserLoadController"
+          styleClass="root-pane"
+          stylesheets="@../resources/css/common.css, @../resources/css/userLoad.css">
+
+    <VBox GridPane.rowIndex="0"
+          GridPane.hgrow="ALWAYS"
+          styleClass="flow"
+          spacing="16"
+          alignment="CENTER">
+
+        <!-- TITLE -->
+        <StackPane styleClass="title-logo-horizontal, height-small"/>
+        <Label styleClass="big-title" text="Add users to the database"/>
+        <Label styleClass="text-description" text="To initialize your server, you will need to add some users to the database. The latter will connect your server to access their different posts, through the client application: PandaGuest."/>
+
+        <!-- CONTENT -->
+        <GridPane>
+            <columnConstraints>
+                <ColumnConstraints minWidth="10.0" percentWidth="40" prefWidth="100.0" />
+                <ColumnConstraints minWidth="10.0" percentWidth="60" prefWidth="100.0" />
+            </columnConstraints>
+
+            <StackPane styleClass="xlsx-notice-picture" GridPane.columnIndex="0"/>
+
+            <VBox GridPane.columnIndex="1" styleClass="subflow" >
+
+                <HBox styleClass="subflow-hbox-title">
+                    <StackPane styleClass="xslx-logo"/>
+                    <Label styleClass="h1" text="Load a XLSX file"/>
+                </HBox>
+
+                <VBox styleClass="subflow-vbox-file">
+                    <HBox styleClass="subflow-hbox-uri">
+                        <Label fx:id="lb_fileUri" styleClass="label-uri" text="No file specified."/>
+                        <Button fx:id="btn_browse" text="Browse" onAction="#browseFiles"/>
+                    </HBox>
+                    <Label fx:id="lb_fileAnalysis" styleClass="label-file-description" text="Select a XLSX file with the valid format"/>
+                </VBox>
+
+                <Separator styleClass="default-h-separator"/>
+
+                <HBox styleClass="submit-box">
+                    <Button fx:id="btn_validate" styleClass="submit-button" text="Validate" onAction="#validate"/>
+                    <Button fx:id="btn_cancel" text="Cancel" onAction="#cancel"/>
+                </HBox>
+            </VBox>
+        </GridPane>
+
+    </VBox>
+
+</GridPane>

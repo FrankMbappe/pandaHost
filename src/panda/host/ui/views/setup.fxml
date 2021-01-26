@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<GridPane xmlns="http://javafx.com/javafx/11.0.1"
+          xmlns:fx="http://javafx.com/fxml/1"
+          stylesheets="@../resources/css/common.css"
+          styleClass="root-pane"
+          fx:controller="panda.host.ui.controllers.SetupController">
+
+   <VBox alignment="CENTER" spacing="16" styleClass="flow" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0">
+
+      <!-- TITLE -->
+      <StackPane styleClass="title-logo-horizontal, height-small" />
+      <Label styleClass="big-title" text="Hello, let us setup MySQL" />
+      <Label alignment="CENTER" styleClass="text-description" text="PandaHost needs to connect to the MySQL database, using your credentials." textAlignment="CENTER" />
+
+      <!-- CONTENT -->
+      <HBox alignment="CENTER">
+         <VBox styleClass="input-box-text">
+            <Label styleClass="input-box-text-label" text="Username" />
+            <TextField fx:id="txt_db_username" promptText="Username" styleClass="input-box-text-field" />
+         </VBox>
+      </HBox>
+
+      <HBox alignment="CENTER">
+         <VBox styleClass="input-box-text">
+            <Label styleClass="input-box-text-label" text="Password" />
+            <TextField fx:id="txt_db_password" promptText="Password" styleClass="input-box-text-field" />
+         </VBox>
+      </HBox>
+
+      <HBox alignment="CENTER">
+         <VBox styleClass="input-box-text">
+            <Label styleClass="input-box-text-label" text="Server name" />
+            <TextField fx:id="txt_db_servername" promptText="Name of your server" styleClass="input-box-text-field" />
+            <Label styleClass="input-box-text-hint" text="This name will be used as the database name." />
+         </VBox>
+      </HBox>
+
+      <HBox styleClass="submit-box">
+         <Button fx:id="btn_validate" onAction="#validate" styleClass="submit-button" text="Validate" />
+         <Button fx:id="btn_cancel" onAction="#cancel" text="Cancel" />
+      </HBox>
+   </VBox>
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+   </rowConstraints>
+   
+</GridPane>

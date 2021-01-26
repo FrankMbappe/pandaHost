@@ -6,22 +6,31 @@ public class User {
     private String username;
     private String password;
     private int permissions;
+    private String permissionMean;
 
     public User(String username, String password, int permissions) {
         this.username = username;
         this.password = password;
         this.permissions = permissions;
+        this.permissionMean = getPermissionMean(permissions);
+    }
+    public User(String username, String password){
+        this.username = username;
+        this.password = password;
+        this.permissions = 0;
+        this.permissionMean = getPermissionMean(permissions);
     }
     public User(String username, int permissions){
         this.username = username;
         this.permissions = permissions;
         this.password = "";
-
+        this.permissionMean = getPermissionMean(permissions);
     }
     public User(String username){
         this.username = username;
         this.permissions = 0;
         this.password = "";
+        this.permissionMean = getPermissionMean(permissions);
     }
 
     @Override
@@ -35,7 +44,7 @@ public class User {
     @Override
     public String toString() {
         return String.format("{\n\tUsername: %s,\n\tPassword: %s,\n\tPermissions: %s\n}",
-                username, password, permissionName(permissions));
+                username, password, permissionMean);
     }
 
     public boolean matchesCredentials(Credentials credentials){
@@ -63,7 +72,11 @@ public class User {
         return permissions;
     }
 
-    public String permissionName(int permission){
+    public String getPermissionMean(){
+        return permissionMean;
+    }
+
+    public String getPermissionMean(int permission){
         switch (permission){
             case 0 -> {
                 return "None";
@@ -82,5 +95,6 @@ public class User {
 
     public void setPermissions(int permissions) {
         this.permissions = permissions;
+        this.permissionMean = getPermissionMean(permissions);
     }
 }

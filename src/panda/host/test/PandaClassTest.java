@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import panda.host.model.models.filters.PostFilter;
 import panda.host.utils.Panda;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static panda.host.utils.Panda.*;
@@ -29,5 +31,18 @@ class PandaClassTest {
         PandaOperation pandaOperation = getOperationTypeFromPandaCode(pandaCode);
         System.out.println(pandaOperation);
         assertEquals(PandaOperation.PANDAOP_RESPONSE_GET_POSTS, pandaOperation);
+    }
+
+    @Test
+    void getARandomFileId(){
+        String randomId = Panda.getARandomFileId("mbappe.frank18@myiuc.com", "pdf");
+        System.out.println("Random file ID generated: " + randomId);
+        assertNotNull(randomId);
+    }
+
+    @Test
+    void getFormattedDate(){
+        LocalDateTime dateTime = LocalDateTime.now().minusDays(1);
+        assertEquals("Yesterday, 04:12", Panda.getFormattedDate(dateTime));
     }
 }
