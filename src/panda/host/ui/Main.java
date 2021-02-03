@@ -13,7 +13,6 @@ import panda.host.utils.Panda;
 import java.util.Objects;
 
 public class Main extends Application {
-
     @Override
     public void start(Stage primaryStage) throws Exception{
         // If the file has a valid connection props, the app loads directly the homepage

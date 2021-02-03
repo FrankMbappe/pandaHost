@@ -10,7 +10,7 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class UserXLSXHelper {
+public class ExcelFileHelper {
 
     public static ArrayList<User> getUserList(String pathToExcelFile, int permissions) {
         ArrayList<User> users = new ArrayList<>();
@@ -21,7 +21,7 @@ public class UserXLSXHelper {
 
             // Indicating the number of rows in the Excel file
             int nbRows = sheet.getPhysicalNumberOfRows();
-            System.out.println(String.format("[UserXLSXHelper, main()] | The Excel file returned %d row(s).", nbRows));
+            System.out.println(String.format("[ExcelFileHelper, main()] | The Excel file returned %d row(s).", nbRows));
 
             // Iterating through each rows of the Excel file, one by one
             for (Row row : sheet) {
@@ -65,7 +65,7 @@ public class UserXLSXHelper {
             return users;
 
         } catch (Exception e) {
-            System.out.println("[UserXLSXHelper, getUserList()] | Error: Something went wrong while parsing the file..");
+            System.out.println("[ExcelFileHelper, getUserList()] | Error: Something went wrong while parsing the file..");
 //            e.printStackTrace();
             return null;
         }

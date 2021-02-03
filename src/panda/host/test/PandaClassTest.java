@@ -13,7 +13,7 @@ import static panda.host.utils.Panda.*;
 class PandaClassTest {
     String pandaCode = "panda@getpost?rescode='404'&data='Nothing'";
 
-    @Test
+    @Test @Deprecated
     void retrieveDataFromServerResponse() {
         // Getting request format
         String getPostRequestFormat = Panda.PANDA_ENCODING_PATTERNS.get(Panda.PandaOperation.PANDAOP_REQUEST_GET_POSTS);
@@ -23,10 +23,10 @@ class PandaClassTest {
         pandaCode = String.format(getPostRequestFormat, filter.isAll(), filter.getFileType(), filter.getSchoolClassId());
         System.out.println(String.format("[Test] | Requesting posts using the panda code: '%s'.", pandaCode));
 
-        assertNotNull(extractFiltersFromPandaCode(pandaCode));
+         assertNotNull(extractFiltersFromPandaCode(pandaCode));
     }
 
-    @Test
+    @Test @Deprecated
     void getOperationFromPandaCode(){
         PandaOperation pandaOperation = getOperationTypeFromPandaCode(pandaCode);
         System.out.println(pandaOperation);

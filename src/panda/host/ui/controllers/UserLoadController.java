@@ -6,8 +6,8 @@ import javafx.scene.control.Label;
 import panda.host.model.data.UserData;
 import panda.host.model.models.User;
 import panda.host.ui.scenes.HomeScene;
+import panda.host.utils.ExcelFileHelper;
 import panda.host.utils.Panda;
-import panda.host.utils.UserXLSXHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class UserLoadController {
             lb_fileUri.setText(file.getAbsolutePath());
 
             // Then I extract the users from that file
-            loadedUsers = UserXLSXHelper.getUserList(file.getAbsolutePath(), 2);
+            loadedUsers = ExcelFileHelper.getUserList(file.getAbsolutePath(), 2);
 
             if(loadedUsers != null){
                 lb_fileAnalysis.getStyleClass().clear();

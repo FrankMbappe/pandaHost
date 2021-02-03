@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 
 public interface PandaRemote extends Remote {
     // A client use notifies the server that it exists
-    void register(String clientId, String syncChannelToJson) throws RemoteException;
+    void register(String clientId, SyncChannel syncChannel) throws RemoteException;
 
     // A client use notifies the server that it is dead
     void unregister(String clientId) throws RemoteException;

@@ -5,12 +5,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import panda.host.config.Configs;
 import panda.host.model.data.PostData;
 import panda.host.model.data.UserData;
 import panda.host.model.exceptions.BadPandaConfigsException;
 import panda.host.model.models.MySQLConfig;
+import panda.host.server.app.WideActionPerformer;
 import panda.host.ui.scenes.PandaScene;
 
 import java.io.File;
@@ -34,7 +36,7 @@ public class Panda {
     // Default app port
     public static final int DEFAULT_PORT = 77;
 
-    // Marshalling and Unmarshalling patterns
+    // Marshalling and Unmarshalling patterns (@DEPRECATED)
     public enum PandaOperation {
         PANDAOP_REQUEST_GET_POSTS, PANDAOP_RESPONSE_GET_POSTS,
         PANDAOP_REQUEST_GET_CONNECTION, PANDAOP_RESPONSE_GET_CONNECTION
@@ -74,6 +76,9 @@ public class Panda {
     public static final String DEFAULT_USER_GUEST_SESSION_NAME = "Guest";
 
 
+
+
+    //   ---  MAIN METHODS --- //
     // Initializing PandaHost
     public static void init(MySQLConfig configurations) throws BadPandaConfigsException {
         // I changed what's below since I'm now dealing with GUI but no more console.
@@ -108,8 +113,13 @@ public class Panda {
 
     // Closing Panda
     public static void exit(){
+        // Notifying all the clients that the server is no more running
+        WideActionPerformer.perform(WideActions.ServerStatusUpdate, false);
+        // Saving the MSQL Configurations
         Configs.saveMySQLConfig(Current.dbConnection.getConfig());
+        // Closing the db connection
         Current.dbConnection.close();
+        // Exiting the app
         System.exit(0);
     }
 
@@ -131,6 +141,10 @@ public class Panda {
         MySQLConfig config = new MySQLConfig(username, password, server);
         Configs.saveMySQLConfig(config);
     }
+
+
+
+    //   ---  UTILS ---  //
 
     // Extract filter list from a panda code
     @Deprecated
@@ -263,10 +277,10 @@ public class Panda {
 
 
 
-    /*     FXML     */
+    //   ---  FXML UTILS ---  //
 
     // Hiding nodes in a scene
-    public static void setNodeVisibility(boolean isVisible, Node... nodes){
+    public static void setNodeVisibility(boolean isVisible, Node @NotNull ... nodes){
         for (Node node: nodes) {
             // Associating the fact that a node is visible, to the fact that it currently exists
             node.managedProperty().bind(node.visibleProperty());
@@ -276,7 +290,7 @@ public class Panda {
     }
 
     // Switching scenes
-    public static void switchScene(Scene currentScene, PandaScene nextScene){
+    public static void switchScene(@NotNull Scene currentScene, PandaScene nextScene){
         // To switch scenes, I firstly get the window
         Stage window = (Stage) currentScene.getWindow();
 
@@ -290,7 +304,7 @@ public class Panda {
     }
 
     // Iterating through a set of textFields to check if at least one of them is empty
-    public static boolean txtsAreNotEmpty(TextField... textFields){
+    public static boolean txtsAreNotEmpty(TextField @NotNull ... textFields){
         boolean txtsAreNotEmpty = true;
         for(var txt : textFields){
             // A textfield is not empty if when deleting all spaces, the text isn't equal to ""
@@ -300,7 +314,7 @@ public class Panda {
     }
 
     // Getting a file from a FileDialog
-    public static File openFileDialog(Node aNode, FileChooser.ExtensionFilter... filters){
+    public static File openFileDialog(@NotNull Node aNode, FileChooser.ExtensionFilter... filters){
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose a file");
 
@@ -308,8 +322,10 @@ public class Panda {
 
         return fileChooser.showOpenDialog(aNode.getScene().getWindow());
     }
+
     // Getting a file extension filter
-    public static  FileChooser.ExtensionFilter genFileFilter(String name, String extension){
+    @Contract("_, _ -> new")
+    public static  FileChooser.@NotNull ExtensionFilter genFileFilter(String name, String extension){
         if (extension.equals("")){
            return  new FileChooser.ExtensionFilter(name, "*");
         }

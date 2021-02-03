@@ -2,6 +2,7 @@ package panda.host.server;
 
 import com.google.gson.Gson;
 import javafx.beans.InvalidationListener;
+import javafx.collections.FXCollections;
 import org.apache.commons.io.FileUtils;
 import panda.host.config.Configs;
 import panda.host.model.data.PostData;
@@ -9,14 +10,17 @@ import panda.host.model.data.UserData;
 import panda.host.model.models.ClientProcess;
 import panda.host.model.models.Post;
 import panda.host.model.models.User;
+import panda.host.server.app.WideActionPerformer;
 import panda.host.utils.Current;
 import panda.host.utils.Panda;
+import panda.host.utils.WideActions;
 
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PandaRemoteImpl extends UnicastRemoteObject implements PandaRemote, Runnable {
     public PandaRemoteImpl() throws RemoteException {
@@ -24,15 +28,19 @@ public class PandaRemoteImpl extends UnicastRemoteObject implements PandaRemote,
     }
 
     @Override
-    public synchronized void register(String clientId, String channelToJson) {
+    public synchronized void register(String clientId, SyncChannel syncChannel) {
         // I add a new client registration to the current ones
         ClientProcess clientProcess = new ClientProcess(clientId);
 
-        SyncChannel syncChannel = new Gson().fromJson(channelToJson, SyncChannel.class);
-
-        if (! Current.registeredClients.containsKey(clientProcess)) {
-            Current.registeredClients.put(clientProcess, syncChannel);
+        if (!Current.registeredClients.containsKey(clientProcess)) {
+            // Adding the client registration
+            Map<ClientProcess, SyncChannel> map = new HashMap<>(Current.registeredClients);
+            map.put(clientProcess, syncChannel);
+            Current.registeredClients = FXCollections.observableMap(map);
             System.out.println("[PandaRemote, register()] | Added: CLIENT@REGISTRATION - " + clientId);
+
+            // Notifying the new client
+            WideActionPerformer.perform(WideActions.ServerStatusUpdate, true);
         }
     }
 
@@ -110,16 +118,16 @@ public class PandaRemoteImpl extends UnicastRemoteObject implements PandaRemote,
         System.out.println(String.format("[PandaRemote, downloadPostFile()] | The file to be downloaded: '%s'.", expectedPath));
         File expectedFile = new File(expectedPath);
 
-        try{
-            if(expectedFile.exists()){
+        try {
+            if (expectedFile.exists()) {
                 return FileUtils.readFileToByteArray(expectedFile);
             }
 
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         System.err.println(String.format("[PandaRemote, downloadPostFile()] |Error! Something went wrong while downloading: '%s' " +
-                        "from the server.", expectedPath));
+                "from the server.", expectedPath));
         return null;
     }
 
@@ -174,24 +182,16 @@ public class PandaRemoteImpl extends UnicastRemoteObject implements PandaRemote,
 
     @Override
     public void run() {
-        // TODO: PostsListChange listener
+        // Notifying all the clients that the server is running
+        WideActionPerformer.perform(WideActions.ServerStatusUpdate, true);
+
+        // Adding a listener to notify all the clients when the post list has been changed
         Current.postList.addListener((InvalidationListener) observable -> {
             System.out.println("[CHANNEL@SYNC] | The post list has been updated.");
 
-            // I iterate through the registered clients to sync their posts' list, using their SyncChannel
-            for(var clientRegistration : Current.registeredClients.entrySet()){
-                try {
-                    // I convert the post list to JSON before sending it through the channels
-                    clientRegistration.getValue().updatePosts(new Gson().toJson(Current.postList));
-                    System.out.println(String.format("[CHANNEL@SYNC] | '%s' | Channel '%s' has been synced.",
-                            Panda.getFormattedDate(LocalDateTime.now()), clientRegistration.getKey().getId()));
+            // Notifying all the clients and updating their post list
+            WideActionPerformer.perform(WideActions.PostListUpdate, new Gson().toJson(Current.postList));
 
-                } catch (RemoteException e) {
-                    System.err.println(String.format("[CHANNEL@SYNC] | '%s' | Channel '%s' failed to sync.",
-                            Panda.getFormattedDate(LocalDateTime.now()), clientRegistration.getKey().getId()));
-                    e.printStackTrace();
-                }
-            }
         });
 
     }

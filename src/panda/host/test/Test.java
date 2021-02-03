@@ -1,4 +1,4 @@
-package panda.host;
+package panda.host.test;
 
 import panda.host.model.models.User;
 import panda.host.server.app.PandaServer;
