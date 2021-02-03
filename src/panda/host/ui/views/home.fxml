@@ -15,11 +15,16 @@
       fx:controller="panda.host.ui.controllers.HomeController">
 
     <VBox fx:id="vbox_flow" styleClass="flow">
+        <!-- TITLE -->
+
         <HBox alignment="CENTER_LEFT" spacing="10">
             <StackPane styleClass="title-logo-horizontal" HBox.hgrow="NEVER" />
             <StackPane HBox.hgrow="ALWAYS" />
             <Label fx:id="lb_devicesConnected" text="No device connected" HBox.hgrow="NEVER" />
         </HBox>
+
+
+        <!-- SERVER LAUNCH -->
 
         <HBox styleClass="launch-box">
             <HBox spacing="15">
@@ -38,6 +43,9 @@
                 <Button fx:id="btn_launchServer" styleClass="submit-button" text="Launch server" onAction="#btn_launch" />
             </VBox>
         </HBox>
+
+
+        <!-- TABLE VIEWS -->
 
         <HBox styleClass="grids-box">
             <VBox HBox.hgrow="SOMETIMES" styleClass="grid-box">
@@ -88,6 +96,7 @@
                     <columns>
                         <TableColumn fx:id="column_users_username" text="ID"/>
                         <TableColumn fx:id="column_users_permissions" text="Permissions"/>
+                        <TableColumn fx:id="column_users_status" text="Status"/>
                     </columns>
                 </TableView>
             </VBox>

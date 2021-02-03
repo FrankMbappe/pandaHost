@@ -209,3 +209,13 @@
     -fx-padding: 10 0 10 0;
 }
 
+/* TABLE VIEWS */
+/*.table-row-cell:last-row .table-cell{*/
+/*    -fx-background-color: palegoldenrod;*/
+/*    -fx-text-fill: darkgoldenrod;*/
+/*}*/
+
+.last-row{
+    -fx-background-color: palegoldenrod;
+    -fx-text-fill: darkgoldenrod;
+}

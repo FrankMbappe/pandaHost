@@ -1,8 +1,6 @@
 package panda.host.model.data;
 
 import com.google.gson.Gson;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import org.jetbrains.annotations.NotNull;
 import panda.host.config.database.MySQLConnection;
 import panda.host.model.models.Authentication;
@@ -10,7 +8,6 @@ import panda.host.model.models.User;
 import panda.host.model.models.filters.Credentials;
 import panda.host.model.models.filters.Filter;
 import panda.host.utils.Current;
-import panda.host.utils.Panda;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserData implements Data<User, String> {
-    public static ObservableList<User> userObservableList = FXCollections.observableArrayList();
     MySQLConnection mySQLConn;
 
     public UserData(){
@@ -28,7 +24,7 @@ public class UserData implements Data<User, String> {
     }
 
     private void updateUserObservableList(){
-        userObservableList.setAll(getAll());
+        Current.userList.setAll(getAll());
     }
 
     @Override
@@ -149,7 +145,7 @@ public class UserData implements Data<User, String> {
     }
 
     @Override
-    public boolean edit(@NotNull User user) {
+    public boolean update(@NotNull User user) {
         String sql = String.format("UPDATE users SET password='%s', permissions=%d WHERE username='%s'",
                 user.getPassword(), user.getPermissions(), user.getUsername());
         try {
@@ -167,13 +163,14 @@ public class UserData implements Data<User, String> {
     }
 
     @Override
-    public String getMatchingDataFromPandaCode(String pandaCode) {
+    public String getJsonMatchingDataFromJsonFilter(String filterToJson) {
+        // @DEPRECATED
         // Here I assume that the panda code sent by the client matches the pattern of PANDAOP_REQUEST_GET_CONNECTION
         // Therefore I can freely create a Credential object using the ID and password contained in the panda code.
-        ArrayList<String> credentialProperties = Panda.extractFiltersFromPandaCode(pandaCode);
+        // ArrayList<String> credentialProperties = Panda.extractFiltersFromPandaCode(filterToJson);
 
-        // I create my credential variable, using the ctor that converts these params from String to their normal type.
-        Credentials credentials = new Credentials(credentialProperties);
+        // I create my credential (also a filter) variable, from the one converted in JSON
+        Credentials credentials = new Gson().fromJson(filterToJson, Credentials.class);
 
         // I return the matching object, applying the filters beforehand extracted
         return getMatchingItemToJson(credentials);
@@ -188,10 +185,10 @@ public class UserData implements Data<User, String> {
         return allUsersHaveBeenAdded;
     }
 
-    public Authentication getAuthObjectFromPandaCode(String pandaCode){
+    public Authentication getAuthFromJsonCredentials(String credentialsToJson){
         // I create a credential object from the panda code:
-        Credentials credentials = new Credentials(Panda.extractFiltersFromPandaCode(pandaCode));
-        System.out.println(String.format("[UserData, getAuthObjectFromPandaCode()] | Credentials' object retrieved: '%s'.",
+        Credentials credentials = new Gson().fromJson(credentialsToJson, Credentials.class);
+        System.out.println(String.format("[UserData, getAuthFromJsonCredentials()] | Credentials' object retrieved: '%s'.",
                 credentials.toString()));
 
         // I find the user matching these credentials in the db:
@@ -199,16 +196,16 @@ public class UserData implements Data<User, String> {
 
         // Depending on the value of matching user, I return an authentication object:
         if (matchingUser != null){
-            System.out.println(String.format("[UserData, getAuthObjectFromPandaCode()] | The matching user is '%s'.",
+            System.out.println(String.format("[UserData, getAuthFromJsonCredentials()] | The matching user is '%s'.",
                     matchingUser.toString()));
-            return new Authentication(1, matchingUser, Timestamp.valueOf(LocalDateTime.now()));
+            return new Authentication(Authentication.Status.GRANTED, matchingUser, Timestamp.valueOf(LocalDateTime.now()));
         } else {
-            System.out.println("[UserData, getAuthObjectFromPandaCode()] | No user matched the credentials.");
-            return new Authentication(0);
+            System.err.println("[UserData, getAuthFromJsonCredentials()] | No user matched the credentials.");
+            return new Authentication(Authentication.Status.REVOKED, Authentication.Type.NORMAL);
         }
     }
 
-    public String getAuthObjectFromPandaCodeToJson(String pandaCode){
-        return new Gson().toJson(getAuthObjectFromPandaCode(pandaCode));
+    public String getJsonAuthFromJsonCredentials(String credentialsToJson){
+        return new Gson().toJson(getAuthFromJsonCredentials(credentialsToJson));
     }
 }

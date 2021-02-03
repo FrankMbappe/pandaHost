@@ -64,11 +64,15 @@ public class Panda {
     public static final String PATH_TO_CONFIG_FILE = "src/panda/host/config/configs.json";
     public static final String DEFAULT_XLSX_FILE_PATH = "src/panda/host/config/sample.xlsx";
     public static final String DEFAULT_FILES_LOCATION = "src/panda/host/files"; // Notice that there's no '/' at the end
+    public static final String PATH_TO_APP_ICON = "panda/host/ui/resources/images/logo.png";
 
     // Default values
+    public static final String APP_NAME = "PandaHost";
     public static final String DEFAULT_SPLIT_CHAR = ";";
     public static final String DEFAULT_DATE_FORMAT = "E, dd MMM yyyy";
     public static final String DEFAULT_TIME_FORMAT = "HH:mm";
+    public static final String DEFAULT_USER_GUEST_SESSION_NAME = "Guest";
+
 
     // Initializing PandaHost
     public static void init(MySQLConfig configurations) throws BadPandaConfigsException {
@@ -102,6 +106,13 @@ public class Panda {
         }
     }
 
+    // Closing Panda
+    public static void exit(){
+        Configs.saveMySQLConfig(Current.dbConnection.getConfig());
+        Current.dbConnection.close();
+        System.exit(0);
+    }
+
     // Input configuration' properties to initialize PandaHost
     static void consoleInputInitConfigs(){
         String server, username, password;
@@ -118,10 +129,11 @@ public class Panda {
         server = sc.nextLine();
 
         MySQLConfig config = new MySQLConfig(username, password, server);
-        Configs.setMySQLConfig(config);
+        Configs.saveMySQLConfig(config);
     }
 
     // Extract filter list from a panda code
+    @Deprecated
     public static ArrayList<String> extractFiltersFromPandaCode(String pandaCode) {
         if (pandaCode != null) {
             // I get the panda operation type
@@ -145,6 +157,7 @@ public class Panda {
     }
 
     // Get the panda operation type from a panda code
+    @Deprecated
     public static PandaOperation getOperationTypeFromPandaCode(String pandaCode){
         if (pandaCode != null) {
             // Since all the patterns are unique, we just have to iterate through them till one matches
@@ -284,14 +297,6 @@ public class Panda {
             txtsAreNotEmpty = txtsAreNotEmpty && !txt.getText().replaceAll("\\s", "").equals("");
         }
         return txtsAreNotEmpty;
-    }
-
-    // Closing the whole application
-    public static void closePanda(Node aNode){
-        Stage stage = (Stage) aNode.getScene().getWindow();
-        stage.close();
-        Current.dbConnection.close();
-        System.exit(0);
     }
 
     // Getting a file from a FileDialog

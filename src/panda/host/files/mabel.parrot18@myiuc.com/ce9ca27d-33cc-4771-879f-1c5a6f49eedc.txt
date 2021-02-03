@@ -1,0 +1,55 @@
+
+OBJECTIFS
+Le projet porte sur la réalisation d’une application qui va permettre d’effectuer des livraisons de colis à partir d’un smartphone. Les acteurs principaux dans ce processus de livraison sont :
+•	L’expéditeur : qui veut effectuer et initie la livraison d’un colis.
+•	Le livreur : qui prendra en charge le colis et sera chargé d’effectuer la livraison. 
+•	Le destinataire : qui recevra le colis.
+L’objectif de ce projet est de produire une plateforme sur laquelle non seulement chacun peut effectuer la livraison d’un colis (sans avoir besoin de passer par une entreprise tierce), mais aussi où des personnes qui ont la capacité de livrer des colis peuvent vendre leurs services : Ce procédé se nomme « Covoiturage de colis ».
+
+Un utilisateur devra être capable d'enregistrer un colis, de choisir un livreur proche de son adresse
+, une destination, un destinataire et de l'expédier. De même il devra être capable de chercher parmi
+les colis livrables disponibles à partir d'une adresse afin de jouer le rôle de livreur dans une transaction
+L'application tourne donc autour de ces échanges de rôles, soit expéditeur soit livreur.
+
+1. Expéditeur: Initie une livraison, enregistre un colis et peut choisir soit de trouver un livreur à 
+l'instant s'il a le nom d'utilisateur de son livreur, soit de le poster afin que d'éventuels intéres
+sés puissent se porter garant
+2. Livreur: Recherche des livraisons à effectuer, se propose pour ces livraisons, reçois des notifications
+quant aux éventuels intéressés à son profil et peut choisir de s'engager ou non
+Les deux pourront voir l'historique de leurs transaction
+
+
+PROCESSUS DE LIVRAISON
+L'utilisateur expéditeur enregistre son colis dans l'application, ensuite il peut choisir soit de le publier directement, soit de
+le garder. 
+
+Il renseigne les informations sur son expédition, c'est-à-dire spécifie un livreur, un destinataire, une destination et un délai.
+
+S'il n'y a pas de livreur disponible, il peut publier son colis sur l'application et celui ci sera visible par les autres utilisateurs.
+
+Lorsqu'un utilisateur s'engage donc pour la livraison d'un colis qu'on a publié, ou lorsque l'expéditeur trouve un livreur
+disponible directement à la création de son expédition, il émettent des offres sur le prix, et ceci tant que le prix n'est 
+pas arrêté (Que les deux parties n'ont pas appuyé sur accepter).
+
+Lorsque les deux parties se sont mises d'accord sur le prix, un code QR est fourni à l'expéditeur. Le livreur quant à lui vient chercher le colis et scanne le code QR. 
+À cet instant là, il se passe 3 opérations :
+    * Le montant arrêté est débité du compte Orange Money de l'expéditeur et envoyé vers le compte OM de l'application
+    * Un code de validation à 6 chiffres est transmis par SMS numéro au destinataire spécifié par l'expéditeur
+    * La livraison passe du statut "Initialisée" au statut "En cours"
+
+L'expéditeur peut à tout moment annuler la livraison, et à cet instant il devra se passer 3 autres opérations :
+    * 50% du montant débité est remboursé à l'expéditeur, et le reste est transmis au livreur pour dédommagement
+    * Un SMS est transmis au destinataire pour annoncer l'annulation de la livraison
+    * La livraison passe du statut "En cours" à "Annulée"
+
+S'il n'y a aucune annulation, le livreur parcours le trajet et livre le colis au destinataire. 
+Lorsque le destinataire reçoit le colis, il vérifie l'intégrité de celui-ci (Si c'est le bon colis, s'il n'est pas endommagé...etc). 
+Si le colis est intègre, le destinataire transmet le code de validation à chiffres au livreur. 
+Le livreur entre alors le code dans l'application, et à cet instant il se passe 3 autres opérations :
+    * Le montant débité de l'expéditeur, qui était alors dans le compte OM de l'application, est transmis au compte OM du livreur
+    * Un SMS est envoyé à toutes les parties pour spécifier que la livraison s'est effectivement achevée
+    * La livraison passe du statut "En cours" à "Terminée"
+
+
+mbappe.frank18@myiuc.com
+IUC18E0036468

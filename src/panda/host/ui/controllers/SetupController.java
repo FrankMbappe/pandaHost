@@ -25,7 +25,7 @@ public class SetupController {
                     txt_db_password.getText(),
                     txt_db_servername.getText().replace(" ", "")
             );
-            Configs.setMySQLConfig(config);
+            Configs.saveMySQLConfig(config);
 
             // Then I try to init PandaHost with these configs
             try{
@@ -43,6 +43,6 @@ public class SetupController {
     }
 
     public void cancel(ActionEvent actionEvent) {
-        closePanda(btn_cancel);
+        Panda.exit();
     }
 }

@@ -19,9 +19,11 @@ public class PandaServer extends UnicastRemoteObject {
 
     public void run() {
         try{
+            PandaRemoteImpl pandaRemote = new PandaRemoteImpl();
+
             System.setProperty("java.rmi.server.hostname","192.168.173.1");
             Registry registry = LocateRegistry.createRegistry(Panda.DEFAULT_PORT);
-            registry.rebind(Panda.DEFAULT_REMOTE_URL, new PandaRemoteImpl());
+            registry.rebind(Panda.DEFAULT_REMOTE_URL, pandaRemote);
             System.out.println("\n-----------------------------------------");
             System.out.println("+              PANDA@SERVER             +");
             System.out.println("-----------------------------------------");
@@ -29,6 +31,9 @@ public class PandaServer extends UnicastRemoteObject {
 
             System.out.println("The Panda server is running...");
             System.out.println("-----------------------------------------");
+
+            // Creating a thread whereby clients will be synced, using their SyncChannel
+            new Thread(pandaRemote, "SyncServer").start();
 
         } catch (RemoteException e){
             e.printStackTrace();

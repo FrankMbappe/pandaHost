@@ -12,9 +12,12 @@ import java.sql.Statement;
  * MySQL connection helper for PandaHost.
  */
 public class MySQLConnection implements AutoCloseable {
+    MySQLConfig config;
     Connection connection;
 
     public MySQLConnection(MySQLConfig config) {
+        this.config = config;
+
         try {
             System.out.println("\n-----------------------------------------");
             System.out.println("+            MYSQL@CONNECTION           +");
@@ -60,6 +63,10 @@ public class MySQLConnection implements AutoCloseable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public MySQLConfig getConfig() {
+        return config;
     }
 
     public Statement getStatement(boolean dbExists){

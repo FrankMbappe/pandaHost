@@ -1,8 +1,6 @@
 package panda.host.model.data;
 
 import com.google.gson.Gson;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import org.apache.commons.io.FileUtils;
 import panda.host.config.database.MySQLConnection;
 import panda.host.model.models.PandaFile;
@@ -10,7 +8,6 @@ import panda.host.model.models.Post;
 import panda.host.model.models.filters.Filter;
 import panda.host.model.models.filters.PostFilter;
 import panda.host.utils.Current;
-import panda.host.utils.Panda;
 
 import java.io.File;
 import java.sql.ResultSet;
@@ -22,15 +19,15 @@ import static panda.host.utils.Panda.generateAPandaFilePath;
 import static panda.host.utils.Panda.getARandomFileId;
 
 public class PostData implements Data<Post, Integer> {
-    public static ObservableList<PandaFile> fileObservableList = FXCollections.observableArrayList();
     MySQLConnection mySQLConn;
 
     public PostData() {
         this.mySQLConn = Current.dbConnection;
     }
 
-    private void updatePostObservableList(){
-        fileObservableList.setAll(getAllFiles());
+    private void updatePostObservables(){
+        Current.postList.setAll(getAll());
+        Current.fileList.setAll(getAllFiles());
     }
 
     @Override
@@ -51,7 +48,7 @@ public class PostData implements Data<Post, Integer> {
             System.out.println("[PostData, init()] | Table 'Posts' created.");
 
             // Update observable
-            updatePostObservableList();
+            updatePostObservables();
 
         } else {
             System.out.println("[PostData, init()] | Error: The connection doesn't exist.");
@@ -191,7 +188,7 @@ public class PostData implements Data<Post, Integer> {
             System.out.println("[PostData, add()] | A post has been successfully added.");
 
             // Update observable content
-            updatePostObservableList();
+            updatePostObservables();
 
             return true;
 
@@ -209,7 +206,7 @@ public class PostData implements Data<Post, Integer> {
             mySQLConn.getStatement(true).executeUpdate(sql);
 
             // Update observable
-            updatePostObservableList();
+            updatePostObservables();
 
         } catch (Exception e) {
             System.out.println(String.format("[PostData, remove()] | Error ! Failed to drop post with id '%d' from the database.", postId));
@@ -220,7 +217,7 @@ public class PostData implements Data<Post, Integer> {
     }
 
     @Override
-    public boolean edit(Post post) {
+    public boolean update(Post post) {
         String sql = String.format("UPDATE posts " +
                         "SET " +
                             "authorId = '%s', " +
@@ -239,7 +236,7 @@ public class PostData implements Data<Post, Integer> {
             mySQLConn.getStatement(true).executeUpdate(sql);
 
             // Update observable
-            updatePostObservableList();
+            updatePostObservables();
 
         } catch (Exception e) {
             System.out.println(String.format("[PostData, edit()] | Error ! Failed to edit post with id '%d' in the database.", post.getId()));
@@ -273,16 +270,16 @@ public class PostData implements Data<Post, Integer> {
     }
 
     @Override
-    public String getMatchingDataFromPandaCode(String pandaCode) {
+    public String getJsonMatchingDataFromJsonFilter(String filterToJson) {
+        // @DEPRECATED
         // Here I assume that the panda code sent by the client matches the pattern of PANDAOP_REQUEST_GET_POSTS
         // Therefore I can freely create a PostFilter using the filters contained in that code
-        ArrayList<String> filtersIntoStringForm = Panda.extractFiltersFromPandaCode(pandaCode);
+        // ArrayList<String> filtersIntoStringForm = Panda.extractFiltersFromPandaCode(filterToJson);
 
         // I create my filter variable, using the ctor that converts these filters from String to their normal type
-        PostFilter postFilter = new PostFilter(filtersIntoStringForm);
+        PostFilter postFilter = new Gson().fromJson(filterToJson, PostFilter.class);
 
         // I return the list, applying the filters beforehand extracted
-        // Notice tha
         return getMatchingDataToJson(postFilter);
     }
 

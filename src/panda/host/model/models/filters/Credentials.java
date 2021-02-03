@@ -10,6 +10,8 @@ public class Credentials implements Filter {
         this.username = username;
         this.password = password;
     }
+
+    @Deprecated
     public Credentials(ArrayList<String> filtersSet){
         this.username = filtersSet.get(0);
         this.password = filtersSet.get(1);

@@ -18,7 +18,7 @@ public class UserLoadController {
     ArrayList<User> loadedUsers = null;
 
     public Button btn_validate;
-    public Button btn_cancel;
+    public Button btn_skip;
     public Button btn_browse;
     public Label lb_fileAnalysis;
     public Label lb_fileUri;
@@ -30,16 +30,17 @@ public class UserLoadController {
     public void validate(ActionEvent actionEvent) {
         new UserData().addAll(loadedUsers);
 
+        // Reusability of the skip() method, since its content should be here
+        skip(actionEvent);
+    }
+
+    public void skip(ActionEvent actionEvent) {
         try {
-            switchScene(btn_validate.getScene(), new HomeScene());
+            switchScene(btn_skip.getScene(), new HomeScene());
 
         } catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    public void cancel(ActionEvent actionEvent) {
-        closePanda(btn_cancel);
     }
 
     public void browseFiles(ActionEvent actionEvent) {

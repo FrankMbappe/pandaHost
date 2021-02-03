@@ -28,11 +28,12 @@ class PandaRemoteImplTest {
                 filter.isAll(), filter.getFileType(), filter.getSchoolClassId());
         System.out.println("Panda code: " + postRequest);
 
-        PandaOperation pandaOperation = Panda.getOperationTypeFromPandaCode(postRequest);
+        // @DEPRECATED
+        //PandaOperation pandaOperation = Panda.getOperationTypeFromPandaCode(postRequest);
 
 //        String serverResponse = new PandaRemoteImpl().getPosts(postRequest);
 
-        assertNotNull(pandaOperation);
+        //assertNotNull(pandaOperation);
     }
 
     @Test

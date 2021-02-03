@@ -7,7 +7,6 @@ import panda.host.utils.Current;
 import panda.host.utils.Panda;
 
 import java.io.File;
-import java.io.IOException;
 
 public class Configs {
     static ObjectMapper mapper = new ObjectMapper();
@@ -21,9 +20,9 @@ public class Configs {
         try{
             //System.out.println("[Configs, get()] | Configurations' file content:\n" + config.toString());
             return mapper.readValue(file, MySQLConfig.class);
-        } catch (IOException e) {
+        } catch (Exception e) {
 //            e.printStackTrace();
-            System.out.println("[Configs, getMySQLConfig()] | The configuration file doesn't exist or is not valid.");
+            System.err.println("[Configs, getMySQLConfig()] | Failed to deserialize configs file..");
         }
         return null;
     }
@@ -31,16 +30,18 @@ public class Configs {
     /**
      * Serializes a config object into the configurations' file
      * @param config The MySQL configuration object
-     * @return A boolean: Operation succeeded
      */
-    public static boolean setMySQLConfig(MySQLConfig config){
+    public static void saveMySQLConfig(MySQLConfig config){
         try {
             mapper.writeValue(file, config);
             Current.dbConnection = new MySQLConnection(config);
-            return true;
-        } catch (IOException e) {
+            System.out.println("[Configs, saveMySQLConfig()] | Configurations has been saved.");
+        } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
+    }
+
+    public static boolean fileIsValid() {
+        return getMySQLConfig() != null;
     }
 }

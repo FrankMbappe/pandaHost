@@ -73,13 +73,13 @@ public interface Data<T, I> {
      * Edit a T element in a database
      * @param t is the T element as an object
      */
-    boolean edit(T t);
+    boolean update(T t);
 
     /**
      * Get values that are filtered using a filter contained in a marshalled code
-     * @param marshalledCode is a filter that will be applied
-     * @return values filtered by the marshalledCode filter
+     * @param filterToJson is a filter that will be applied
+     * @return values filtered using the filterToJson object
      */
-    String getMatchingDataFromPandaCode(String marshalledCode);
+    String getJsonMatchingDataFromJsonFilter(String filterToJson);
 
 }
