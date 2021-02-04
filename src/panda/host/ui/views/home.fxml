@@ -20,7 +20,7 @@
         <HBox alignment="CENTER_LEFT" spacing="10">
             <StackPane styleClass="title-logo-horizontal" HBox.hgrow="NEVER" />
             <StackPane HBox.hgrow="ALWAYS" />
-            <Label fx:id="lb_devicesConnected" text="No device connected" HBox.hgrow="NEVER" />
+            <Label fx:id="lb_devicesConnected" text="No registered client" HBox.hgrow="NEVER" />
         </HBox>
 
 

@@ -2,6 +2,7 @@ package panda.host.model.data;
 
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 import panda.host.config.database.MySQLConnection;
 import panda.host.model.models.PandaFile;
 import panda.host.model.models.Post;
@@ -113,7 +114,7 @@ public class PostData implements Data<Post, Integer> {
 
     public long getTotalFilesSize(){
         long sum = 0;
-        for (var file : getAllFiles()){
+        for (var file : Current.fileList){
             sum += file.getSize();
         }
         return sum;
@@ -160,7 +161,7 @@ public class PostData implements Data<Post, Integer> {
     }
 
     @Override
-    public boolean add(Post post) {
+    public boolean add(@NotNull Post post) {
         try {
             // If the post contains a file, I save the file first
             if (post.containsAFile()){
@@ -217,7 +218,7 @@ public class PostData implements Data<Post, Integer> {
     }
 
     @Override
-    public boolean update(Post post) {
+    public boolean update(@NotNull Post post) {
         String sql = String.format("UPDATE posts " +
                         "SET " +
                             "authorId = '%s', " +
@@ -271,11 +272,6 @@ public class PostData implements Data<Post, Integer> {
 
     @Override
     public String getJsonMatchingDataFromJsonFilter(String filterToJson) {
-        // @DEPRECATED
-        // Here I assume that the panda code sent by the client matches the pattern of PANDAOP_REQUEST_GET_POSTS
-        // Therefore I can freely create a PostFilter using the filters contained in that code
-        // ArrayList<String> filtersIntoStringForm = Panda.extractFiltersFromPandaCode(filterToJson);
-
         // I create my filter variable, using the ctor that converts these filters from String to their normal type
         PostFilter postFilter = new Gson().fromJson(filterToJson, PostFilter.class);
 

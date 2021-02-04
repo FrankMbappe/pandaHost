@@ -67,12 +67,8 @@ public class PandaRemoteImpl extends UnicastRemoteObject implements PandaRemote,
 
         if (Configs.fileIsValid()) {
 
-            System.out.println("[PandaRemote, getPosts()] | Attempting to access the post database...");
-
             // I get the matching data converted to json
             String matchingDataToJson = new PostData().getJsonMatchingDataFromJsonFilter(filterToJson);
-            System.out.println(String.format("[PandaRemote, getPosts()] | Data retrieved and converted to JSON: '%s'.",
-                    matchingDataToJson));
 
             System.out.println("PandaRemote, getPosts()] | Task ended.");
 
@@ -190,9 +186,10 @@ public class PandaRemoteImpl extends UnicastRemoteObject implements PandaRemote,
             System.out.println("[CHANNEL@SYNC] | The post list has been updated.");
 
             // Notifying all the clients and updating their post list
-            WideActionPerformer.perform(WideActions.PostListUpdate, new Gson().toJson(Current.postList));
+            WideActionPerformer.perform(WideActions.PostListUpdate, new Gson().toJson(Current.postList.toArray()));
 
         });
 
     }
+
 }

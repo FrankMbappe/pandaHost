@@ -164,11 +164,6 @@ public class UserData implements Data<User, String> {
 
     @Override
     public String getJsonMatchingDataFromJsonFilter(String filterToJson) {
-        // @DEPRECATED
-        // Here I assume that the panda code sent by the client matches the pattern of PANDAOP_REQUEST_GET_CONNECTION
-        // Therefore I can freely create a Credential object using the ID and password contained in the panda code.
-        // ArrayList<String> credentialProperties = Panda.extractFiltersFromPandaCode(filterToJson);
-
         // I create my credential (also a filter) variable, from the one converted in JSON
         Credentials credentials = new Gson().fromJson(filterToJson, Credentials.class);
 

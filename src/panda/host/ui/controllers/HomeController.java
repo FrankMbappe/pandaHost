@@ -97,7 +97,11 @@ public class HomeController {
             updateUserTableContent();
         });
 
-        // TODO: Current.registeredClients.addListener() to display the connected devices in realtime
+        // Display the number registered clients in realtime
+        Current.registeredClients.addListener((InvalidationListener) observable -> {
+            System.out.println("[HomeCtrl, init()] | The registered devices list has been updated.");
+            updateRegisteredClientsContent();
+        });
 
     }
 
@@ -189,7 +193,7 @@ public class HomeController {
         // Loading data into table files
         table_files.setItems(Current.fileList);
         // Displaying stats
-        lb_fileStats.textProperty().setValue(String.format("(%d files/%s)",
+        lb_fileStats.setText(String.format("(%d files/%s)",
                 Current.fileList.size(),
                 convertLongSizeToString(postData.getTotalFilesSize())) // e.g: 8.5MB
         );
@@ -200,6 +204,15 @@ public class HomeController {
         table_users.setItems(Current.userList);
         // Displaying stats
         lb_userStats.setText(String.format("(%d registered)", Current.userList.size()));
+    }
+
+    void updateRegisteredClientsContent() {
+        int countRegistered = Current.registeredClients.size();
+        if (countRegistered > 0){
+            lb_devicesConnected.setText("Client(s) registered: " + countRegistered);
+        } else {
+            lb_devicesConnected.setText("No registered client");
+        }
     }
 
     void setServerIsRunning(boolean launched){
